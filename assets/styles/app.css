@@ -1,3 +1,20 @@
 body {
     background-color: skyblue;
 }
+
+.quizz-container{
+    display: flex;
+    width: 80%;
+    margin: auto;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.quizz-container > *{
+    margin : 2rem;
+}
+
+.quizz-button img{
+    width: 40rem;
+    height: 40rem;
+}

@@ -30,7 +30,7 @@ class AppFixtures extends Fixture
 
         foreach ($categories as $category) {
             $quizz = new Quizz();
-            $picPath = __DIR__ . '../Data/quizzPics/' . $category->getName() . '.jpg';
+            $picPath =  '../quizzPics/' . $category->getName() . '.jpg';
 
             $quizz->setCreatedAt(new DateTimeImmutable())
                 ->setTitle($this->returnTitle($category->getName()))
