@@ -8,7 +8,7 @@
 
 {% for quizz in quizzes %}
 
-<a href="{{path('quizz',{name:quizz.category.name})}}" class="quizz-button">
+<a href="{{path('quizz',{id:quizz.id})}}" class="quizz-button">
 <img src="{{quizz.imgurl}}" >
 </a>
 

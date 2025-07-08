@@ -34,7 +34,7 @@ class Quizz
     /**
      * @var Collection<int, Question>
      */
-    #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'quizz_id')]
+    #[ORM\OneToMany(targetEntity: Question::class, mappedBy: 'quizz')]
     private Collection $questions;
 
     public function __construct()
