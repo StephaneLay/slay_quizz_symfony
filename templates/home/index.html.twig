@@ -8,9 +8,13 @@
 
 {% for quizz in quizzes %}
 
+<div class="quizz-card">
 <a href="{{path('quizz',{id:quizz.id})}}" class="quizz-button">
 <img src="{{quizz.imgurl}}" >
 </a>
+<p>{{quizz.title}}</p>
+</div>
+
 
 {% endfor %}
 </div>
