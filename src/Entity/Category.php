@@ -58,7 +58,7 @@ class Category
     {
         if (!$this->quizzs->contains($quizz)) {
             $this->quizzs->add($quizz);
-            $quizz->setCategoryId($this);
+            $quizz->setCategory($this);
         }
 
         return $this;
@@ -68,8 +68,8 @@ class Category
     {
         if ($this->quizzs->removeElement($quizz)) {
             // set the owning side to null (unless already changed)
-            if ($quizz->getCategoryId() === $this) {
-                $quizz->setCategoryId(null);
+            if ($quizz->getCategory() === $this) {
+                $quizz->setCategory(null);
             }
         }
 

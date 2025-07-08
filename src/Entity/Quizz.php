@@ -29,7 +29,7 @@ class Quizz
     private ?string $img_url = null;
 
     #[ORM\ManyToOne(inversedBy: 'quizzs')]
-    private ?Category $category_id = null;
+    private ?Category $category = null;
 
     /**
      * @var Collection<int, Question>
@@ -95,14 +95,14 @@ class Quizz
         return $this;
     }
 
-    public function getCategoryId(): ?Category
+    public function getCategory(): ?Category
     {
-        return $this->category_id;
+        return $this->category;
     }
 
-    public function setCategoryId(?Category $category_id): static
+    public function setCategory(?Category $category): static
     {
-        $this->category_id = $category_id;
+        $this->category = $category;
 
         return $this;
     }
@@ -119,7 +119,7 @@ class Quizz
     {
         if (!$this->questions->contains($question)) {
             $this->questions->add($question);
-            $question->setQuizzId($this);
+            $question->setQuizz($this);
         }
 
         return $this;
@@ -129,8 +129,8 @@ class Quizz
     {
         if ($this->questions->removeElement($question)) {
             // set the owning side to null (unless already changed)
-            if ($question->getQuizzId() === $this) {
-                $question->setQuizzId(null);
+            if ($question->getQuizz() === $this) {
+                $question->setQuizz(null);
             }
         }
 

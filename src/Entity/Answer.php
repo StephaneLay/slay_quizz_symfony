@@ -21,7 +21,7 @@ class Answer
     private ?bool $isCorrect = null;
 
     #[ORM\ManyToOne(inversedBy: 'answers')]
-    private ?Question $question_id = null;
+    private ?Question $question = null;
 
     public function getId(): ?int
     {
@@ -52,14 +52,14 @@ class Answer
         return $this;
     }
 
-    public function getQuestionId(): ?Question
+    public function getQuestion(): ?Question
     {
-        return $this->question_id;
+        return $this->question;
     }
 
-    public function setQuestionId(?Question $question_id): static
+    public function setQuestion(?Question $question): static
     {
-        $this->question_id = $question_id;
+        $this->question = $question;
 
         return $this;
     }

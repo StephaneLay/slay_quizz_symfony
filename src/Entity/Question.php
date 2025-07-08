@@ -20,7 +20,7 @@ class Question
     private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'questions')]
-    private ?Quizz $quizz_id = null;
+    private ?Quizz $quizz = null;
 
     /**
      * @var Collection<int, Answer>
@@ -50,14 +50,14 @@ class Question
         return $this;
     }
 
-    public function getQuizzId(): ?Quizz
+    public function getQuizz(): ?Quizz
     {
-        return $this->quizz_id;
+        return $this->quizz;
     }
 
-    public function setQuizzId(?Quizz $quizz_id): static
+    public function setQuizz(?Quizz $quizz): static
     {
-        $this->quizz_id = $quizz_id;
+        $this->quizz = $quizz;
 
         return $this;
     }
@@ -74,7 +74,7 @@ class Question
     {
         if (!$this->answers->contains($answer)) {
             $this->answers->add($answer);
-            $answer->setQuestionId($this);
+            $answer->setQuestion($this);
         }
 
         return $this;
@@ -84,8 +84,8 @@ class Question
     {
         if ($this->answers->removeElement($answer)) {
             // set the owning side to null (unless already changed)
-            if ($answer->getQuestionId() === $this) {
-                $answer->setQuestionId(null);
+            if ($answer->getQuestion() === $this) {
+                $answer->setQuestion(null);
             }
         }
 
