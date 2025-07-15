@@ -10,7 +10,7 @@
 
 <div class="quizz-card">
 <a href="{{path('quizz',{id:quizz.id})}}" class="quizz-button">
-<img src="{{quizz.imgurl}}" >
+ <img src="{{ asset(quizz.imgUrl) }}" />
 </a>
 <p>{{quizz.title}}</p>
 </div>

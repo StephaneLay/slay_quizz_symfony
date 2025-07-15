@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello QuizzController!{% endblock %}
+
+{% block body %}
+
+<div>
+<h1>{{quizz.title}}</h1>
+<img src="{{ asset('images/~.png') }}" alt="Mon image" />
+<p>{{quizz.description}}</p>
+
+<a href="">Play Quizz</a>
+</div>
+
+
+
+
+{% endblock %}

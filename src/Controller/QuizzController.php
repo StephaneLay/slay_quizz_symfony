@@ -13,7 +13,7 @@ final class QuizzController extends AbstractController
     #[Route('/quizz/{id}', name: 'quizz')]
     public function index(Quizz $quizz): Response
     {
-        return $this->render('quizz/index.html.twig', [
+        return $this->render('quizz/quizz.html.twig', [
             'controller_name' => 'QuizzController',
             'quizz' => $quizz
             

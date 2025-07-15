@@ -30,12 +30,13 @@ class AppFixtures extends Fixture
 
         foreach ($categories as $category) {
             $quizz = new Quizz();
-            $picPath =  '../quizzPics/' . $category->getName() . '.jpg';
+            $picPath =  'images/' . $category->getName() . '.jpg';
 
             $quizz->setCreatedAt(new DateTimeImmutable())
                 ->setTitle($this->returnTitle($category->getName()))
                 ->setCategory($category)
-                ->setImgUrl($picPath);
+                ->setImgUrl($picPath)
+                ->setDescription("Voici un super quiz de la catégorie ".$category->getName());
 
             $quizzes[] = $quizz;
             $manager->persist($quizz);
