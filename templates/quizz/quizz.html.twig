@@ -6,10 +6,10 @@
 
 <div>
 <h1>{{quizz.title}}</h1>
-<img src="{{ asset('images/~.png') }}" alt="Mon image" />
+<img src="{{ asset(quizz.imgUrl) }}"  />
 <p>{{quizz.description}}</p>
 
-<a href="">Play Quizz</a>
+<a href="{{path('playquizz',{id:quizz.id})}}" class="quizz-button">Play this quizz</a>
 </div>
 
 

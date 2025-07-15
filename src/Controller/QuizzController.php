@@ -19,4 +19,14 @@ final class QuizzController extends AbstractController
             
         ]);
     }
+
+    #[Route('/quizz/{id}/play', name: 'playquizz')]
+    public function play(Quizz $quizz): Response
+    {
+        return $this->render('quizz/playquizz.html.twig', [
+            'controller_name' => 'QuizzController',
+            'quizz' => $quizz
+            
+        ]);
+    }
 }
