@@ -6,12 +6,17 @@ use App\Entity\Answer;
 use App\Entity\Category;
 use App\Entity\Question;
 use App\Entity\Quizz;
+use App\Entity\User;
 use DateTimeImmutable;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    public function __construct(private UserPasswordHasherInterface $hasher)
+    {
+    }
     public function load(ObjectManager $manager): void
     {
         $sheet = $this->convertCsv(__DIR__ . '..\Data\Questionssheet.csv');
@@ -20,6 +25,13 @@ class AppFixtures extends Fixture
         $quizzes = [];
 
         $categoriesName = ['CS', 'HG', 'JV', 'MU', 'NS', 'SL'];
+
+        $adminUser = new User();
+        $adminUser->setEmail("admin@admin.fr")
+            ->setName("admin")
+            ->setRoles(['ROLE_ADMIN'])
+            ->setPassword($this->hasher->hashPassword($adminUser, 'test'));
+        $manager->persist($adminUser);
 
         foreach ($categoriesName as $categoryName) {
             $category = new Category();
@@ -30,13 +42,14 @@ class AppFixtures extends Fixture
 
         foreach ($categories as $category) {
             $quizz = new Quizz();
-            $picPath =  'images/' . $category->getName() . '.jpg';
+            $picPath = 'images/' . $category->getName() . '.jpg';
 
             $quizz->setCreatedAt(new DateTimeImmutable())
                 ->setTitle($this->returnTitle($category->getName()))
                 ->setCategory($category)
                 ->setImgUrl($picPath)
-                ->setDescription("Voici un super quiz de la catégorie ".$category->getName());
+                ->setDescription("Voici un super quiz de la catégorie " . $category->getName())
+                ->setAuthor($adminUser);
 
             $quizzes[] = $quizz;
             $manager->persist($quizz);
@@ -44,16 +57,16 @@ class AppFixtures extends Fixture
 
         foreach ($sheet as $line) {
             $question = new Question();
-            $question->setContent($line["Question"])->setQuizz($this->returnQuizz($line["Category"],$quizzes));
+            $question->setContent($line["Question"])->setQuizz($this->returnQuizz($line["Category"], $quizzes));
             $manager->persist($question);
 
             $answer = new Answer();
             $answer->setIsCorrect(true)->setContent($line["Answer"])->setQuestion($question);
             $manager->persist($answer);
 
-            for ($i=1; $i <4 ; $i++) { 
+            for ($i = 1; $i < 4; $i++) {
                 $wrongAnswer = new Answer();
-                $wrongAnswer->setIsCorrect(false)->setContent($line["BadAnswer".$i])->setQuestion($question);
+                $wrongAnswer->setIsCorrect(false)->setContent($line["BadAnswer" . $i])->setQuestion($question);
                 $manager->persist($wrongAnswer);
             }
         }
@@ -77,8 +90,9 @@ class AppFixtures extends Fixture
         return $data;
     }
 
-    private function returnQuizz(string $codeName,$quizzes){
-        foreach ($quizzes as  $quizz) {
+    private function returnQuizz(string $codeName, $quizzes)
+    {
+        foreach ($quizzes as $quizz) {
             if ($quizz->getCategory()->getName() === $codeName) {
                 return $quizz;
             }
