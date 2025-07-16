@@ -4,17 +4,26 @@
 
 {% block body %}
 
-<h2>{{question.content}}</h2>
+<h1>{{question.content}}</h1>
+<h2>{{message}}</h2>
     
 <div class="answers-container">
     {% for answer in question.answers %}
-        <div>
-            <input type="radio" name="answer" value="{{ answer.isCorrect }}" required>
-            {{ answer.content }}
-        </div>
+
+    <p class="
+    {% if answer == userAnswer %}
+    user-answer
+    {% endif %}
+    {% if answer.isCorrect %}
+    good-answer
+    {% else %}
+    wrong-answer
+    {% endif %}
+    ">{{ answer.content }} {{ (answer.votes / totalVotes * 100)|number_format(1, '.', '') }} %
     {% endfor %}
+    </p>
 </div>
     
-
+<a href="{{ path('playquizz', { id: question.quizz.id }) }}">Question suivante</a>
 
 {% endblock %}

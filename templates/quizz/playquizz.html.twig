@@ -9,7 +9,7 @@
     
     {% for answer in question.answers %}
         <div>
-            <input type="radio" name="answer" value="{{ answer.isCorrect }}" required>
+            <input type="radio" name="answer" value="{{ answer.id }}" required>
             {{ answer.content }}
         </div>
     {% endfor %}

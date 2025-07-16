@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\CustomServices\QuestionService;
+use App\Entity\Answer;
 use App\Entity\Category;
 use App\Entity\Question;
 use App\Entity\Quizz;
@@ -28,13 +29,13 @@ final class QuizzController extends AbstractController
         ]);
     }
 
-    #[Route('/quizz/{id}/play', name: 'playquizz',methods: ['GET'])]
-    public function play(Quizz $quizz,
-     ResultsRepository $resultsRepository,
-     QuestionService $questionService,
-     EntityManagerInterface $em
-     ): Response
-    {
+    #[Route('/quizz/{id}/play', name: 'playquizz', methods: ['GET'])]
+    public function play(
+        Quizz $quizz,
+        ResultsRepository $resultsRepository,
+        QuestionService $questionService,
+        EntityManagerInterface $em
+    ): Response {
         $user = $this->getUser();
         $result = $resultsRepository->findOneBy(
             [
@@ -43,7 +44,7 @@ final class QuizzController extends AbstractController
             ]
         );
         if ($result) {
-            $question = $questionService->getQuestionByTracker($result->getQuestionTracker(),$quizz);
+            $question = $questionService->getQuestionByTracker($result->getQuestionTracker(), $quizz);
 
         } else {
             $newResult = new Results();
@@ -51,11 +52,11 @@ final class QuizzController extends AbstractController
                 ->setQuizz($quizz)
                 ->setScore(0)
                 ->setQuestionTracker(0);
-            
-                $em->persist($newResult);
-                $em->flush();
 
-            $question = $questionService->getQuestionByTracker(0,$quizz);
+            $em->persist($newResult);
+            $em->flush();
+
+            $question = $questionService->getQuestionByTracker(0, $quizz);
         }
 
 
@@ -66,45 +67,78 @@ final class QuizzController extends AbstractController
         ]);
     }
 
-     #[Route('/quizz/{id}/play', name: 'submit',methods: ['POST'])]
-    public function submit(Quizz $quizz,
-    ResultsRepository $resultsRepository,
-    Request $request,
-    EntityManagerInterface $em,
-    QuestionService $questionService,
-    AnswerRepository $answerRepository
-     ): Response
-    {
-       $user = $this->getUser();
-       $result = $resultsRepository->findOneBy(
+    #[Route('/quizz/{id}/play', name: 'submit', methods: ['POST'])]
+    public function submit(
+        Quizz $quizz,
+        ResultsRepository $resultsRepository,
+        Request $request,
+        EntityManagerInterface $em,
+        QuestionService $questionService,
+        AnswerRepository $answerRepository
+    ): Response {
+        $user = $this->getUser();
+        $result = $resultsRepository->findOneBy(
             [
                 'user' => $user,
                 'quizz' => $quizz
             ]
         );
         //ON VEUT RECUPRER LA QUESTION PUR DISPLAY LE REULTAT AVANT DE L'INCREMENTER
-        $question = $questionService->getQuestionByTracker($result->getQuestionTracker(),$quizz);
-        $totalVotes= $answerRepository->getSumVotesByQuestion($question->getId());
+        $question = $questionService->getQuestionByTracker($result->getQuestionTracker(), $quizz);
+        $answerId = $request->request->get('answer');
+        $userAnswer = $answerRepository->findOneBy(['id' => $answerId]);
+        $userAnswer->setVotes($userAnswer->getVotes() + 1);
 
-        $result->setQuestionTracker($result->getQuestionTracker()+1);
-        $answer = $request->request->get('answer');
-        
-        //ANSWER EST UN BOOLEEN , DONC GAGNE UN POINT QUE SI LA REPONSE EST JUSTE
-        $result->setScore($result->getScore()+ intval($answer));
+
+
+
+
+
+        $result->setQuestionTracker($result->getQuestionTracker() + 1);
+        $message = "Mauvaise réponse ";
+
+        if ($userAnswer->isCorrect()) {
+            $result->setScore($result->getScore() + 1);
+            $message = "Bonne réponse !";
+        }
+
 
         $em->flush();
         
 
-        //PREVOIR 
 
-        // return $this->redirectToRoute('playquizz', ['id' => $quizz->getId()]);
+
+        return $this->redirectToRoute('answerresult', [
+            'id' => $quizz->getId(),
+            'questionId' => $question->getId(),
+            'answerId' => $userAnswer->getId(),
+        ]);
+
+
+    }
+
+    #[Route(
+        '/quizz/{id}/answer-result/{questionId}/{answerId}',
+        name: 'answerresult',
+        methods: ['GET']
+    )]
+    public function answerresult(
+        int $id,
+        int $questionId,
+        int $answerId,
+        QuestionRepository $questionRepository,
+        AnswerRepository $answerRepository
+    ): Response {
+        $question = $questionRepository->find($questionId);
+        $userAnswer = $answerRepository->find($answerId);
+        $totalVotes = $answerRepository->getSumVotesByQuestion($question->getId());
 
         return $this->render('quizz/displayanswer.html.twig', [
             'controller_name' => 'QuizzController',
             'question' => $question,
-            'totalVotes' => $totalVotes
-
+            'userAnswer' => $userAnswer,
+            'totalVotes' => $totalVotes,
+            'message' => 'test'
         ]);
     }
-   
 }
