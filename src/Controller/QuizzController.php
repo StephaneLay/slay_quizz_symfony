@@ -76,6 +76,7 @@ final class QuizzController extends AbstractController
         QuestionService $questionService,
         AnswerRepository $answerRepository
     ): Response {
+
         $user = $this->getUser();
         $result = $resultsRepository->findOneBy(
             [
@@ -83,29 +84,17 @@ final class QuizzController extends AbstractController
                 'quizz' => $quizz
             ]
         );
-        //ON VEUT RECUPRER LA QUESTION PUR DISPLAY LE REULTAT AVANT DE L'INCREMENTER
         $question = $questionService->getQuestionByTracker($result->getQuestionTracker(), $quizz);
         $answerId = $request->request->get('answer');
         $userAnswer = $answerRepository->findOneBy(['id' => $answerId]);
-        $userAnswer->setVotes($userAnswer->getVotes() + 1);
 
+        $userAnswer->addVote();
+        $result->addQuestionTracker();
 
-
-
-
-
-        $result->setQuestionTracker($result->getQuestionTracker() + 1);
-        $message = "Mauvaise réponse ";
-
-        if ($userAnswer->isCorrect()) {
-            $result->setScore($result->getScore() + 1);
-            $message = "Bonne réponse !";
-        }
-
-
-        $em->flush();
+        //BOOLEEN DONC INCREMENTE QUE SI REPONSE CORRECTE
+        $result->setScore($result->getScore() + intval($userAnswer->isCorrect()));
         
-
+        $em->flush();
 
 
         return $this->redirectToRoute('answerresult', [
@@ -138,7 +127,7 @@ final class QuizzController extends AbstractController
             'question' => $question,
             'userAnswer' => $userAnswer,
             'totalVotes' => $totalVotes,
-            'message' => 'test'
+            'message' => $userAnswer->isCorrect() ? 'Bonne réponse !' : 'Mauvaise réponse'
         ]);
     }
 }

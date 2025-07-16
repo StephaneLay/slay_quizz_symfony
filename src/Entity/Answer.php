@@ -72,6 +72,12 @@ class Answer
         return $this->votes;
     }
 
+    public function addVote(): static{
+        $this->votes += 1;
+
+        return $this;
+    }
+
     public function setVotes(int $votes): static
     {
         $this->votes = $votes;

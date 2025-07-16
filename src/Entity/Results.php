@@ -45,6 +45,12 @@ class Results
         return $this;
     }
 
+    public function addScore(): static{
+        $this->score +=1;
+
+        return $this;
+    }
+
     public function getCompletedAt(): ?\DateTimeImmutable
     {
         return $this->completedAt;
@@ -65,6 +71,12 @@ class Results
     public function setQuestionTracker(int $questionTracker): static
     {
         $this->questionTracker = $questionTracker;
+
+        return $this;
+    }
+
+    public function addQuestionTracker(): static{
+        $this->questionTracker += 1;
 
         return $this;
     }
