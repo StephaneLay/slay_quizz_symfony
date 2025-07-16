@@ -3,20 +3,11 @@
 {% block title %}HomePage des quizz{% endblock %}
 
 {% block body %}
+{% include 'parts/navbar.html.twig' %}
 
-<div class="quizz-container">
-
-{% for quizz in quizzes %}
-
-<div class="quizz-card">
-<a href="{{path('quizz',{id:quizz.id})}}" class="quizz-button">
- <img src="{{ asset(quizz.imgUrl) }}" />
-</a>
-<p>{{quizz.title}}</p>
-</div>
-
-
-{% endfor %}
+<div class="homelinkcontainer">
+    <a href="{{path('play')}}">Jouer</a>
+    <a href="">Creer/gerer vos quizz</a>
 </div>
 
 {% endblock %}

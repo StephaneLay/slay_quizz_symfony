@@ -36,7 +36,7 @@ class AppFixtures extends Fixture
         $adminUser->setEmail("admin@admin.fr")
             ->setName("admin")
             ->setRoles(['ROLE_ADMIN'])
-            ->setPassword($this->hasher->hashPassword($adminUser, 'test'));
+            ->setPassword($this->hasher->hashPassword($adminUser, 'admin'));
         $manager->persist($adminUser);
 
         foreach (SELF::CATEGORIES as $categoryCode=>$categoryName) {
