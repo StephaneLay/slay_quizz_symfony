@@ -9,12 +9,7 @@
 
 {% for quizz in quizzes %}
 
-<div class="quizz-card">
-<a href="{{path('quizz',{id:quizz.id})}}" class="quizz-button">
- <img src="{{ asset(quizz.imgUrl) }}" />
-</a>
-<p>{{quizz.title}}</p>
-</div>
+{% include 'parts/quizzcard.html.twig' with {'quizz' : quizz} %}
 
 
 {% endfor %}

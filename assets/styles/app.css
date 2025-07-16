@@ -1,11 +1,121 @@
+/* GLOBAL */
+
 *{
     margin: 0;
     padding: 0;
 }
 
-body {
-    background-color: skyblue;
+body{
+    background-color: #264653;
 }
+
+/* NAVBAR */
+
+
+header nav{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    background-color: #e76f51;
+    padding: 2rem;
+    color: #e9c46a;
+}
+
+/* PAGES SECURITY (LOGIN + SUBSCRIBE) */
+
+/* Page login */
+
+.login-form{
+    width: 30%;
+    margin: auto;
+    background-color: #2a9d8f;
+}
+
+.login-form h1 ,.login-form h2{
+    font-size: 1.5em;
+    text-align: center;
+    margin : 1rem 0;
+    
+}
+
+.input-container{
+    display: flex;
+    flex-direction: column;
+    width: 60%;
+    margin: auto;
+}
+
+.input-container>input{
+    margin-bottom: 1.5rem;
+    height: 2rem;
+}
+
+.login-button{
+    margin-top: 1rem;
+    padding: 1rem;
+    background-color: #e76f51;
+    color: white;
+}
+
+/* Page Subscribe */
+
+.subscribe-container{
+    width: 30%;
+    margin: auto;
+    background-color: #2a9d8f;
+}
+
+.subscribe-container h1{
+    margin: 2rem 0;
+    text-align: center;
+}
+
+#subscription_form{
+    width: 60%;
+    margin: auto;
+}
+
+#subscription_form > *{
+    display: flex;
+    flex-direction: column;
+}
+
+#subscription_form input , #subscription_form select{
+    margin-bottom: 1.5rem;
+    height: 2rem;
+}
+
+#subscription_form_Subscribe{
+    margin-bottom: 1rem;
+    padding: 1rem;
+    background-color: #e76f51;
+    color: white;
+}
+
+/* PAGES HOME */
+
+/* Page root */
+
+.homelinkcontainer{
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    margin:auto
+}
+
+.homelinkcontainer a{
+    text-align: center;
+    text-decoration: none;
+    background-color:#2a9d8f ;
+    padding: 2rem;
+    color: #e9c46a;
+    margin-top: 2rem;
+    border-radius: 15px;
+    font-size: 2em;
+}
+
+/* Page show quizz */
 
 .quizz-container{
     display: flex;
@@ -15,6 +125,31 @@ body {
     justify-content: center;
 }
 
+.quizz-card{
+    text-align: center;
+    font-size: 1.5em;
+    background-color: #2a9d8f;
+    border-radius: 10px;
+    
+}
+
+.quizz-card img{
+    border-radius: 10px 10px 0 0 ;
+}
+
+.quizz-card p{
+    margin: 1rem 0;
+    
+}
+
+.quizz-card a{
+    text-decoration: none;
+    color: #e9c46a;
+}
+
+
+
+
 .quizz-container > *{
     margin : 2rem;
 }
@@ -22,15 +157,6 @@ body {
 .quizz-button img{
     width: 20rem;
     height: 20rem;
-}
-
-header nav{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    background-color: beige;
-    padding: 2rem;
 }
 
 .user-answer{
