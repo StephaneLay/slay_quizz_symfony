@@ -6,13 +6,11 @@ use App\Entity\User;
 use App\Form\SubscriptionFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
-use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 class SecurityController extends AbstractController
 {
@@ -41,8 +39,7 @@ class SecurityController extends AbstractController
     public function Signin(
         Request $request,
         EntityManagerInterface $em,
-        UserPasswordHasherInterface $hasher,
-        HttpClientInterface $spamChecker
+        UserPasswordHasherInterface $hasher
     ): Response {
 
         $user = new User();
@@ -62,6 +59,8 @@ class SecurityController extends AbstractController
 
             $em->persist($user);
             $em->flush();
+
+            //PROC ICI LEVENT MAIL SI BESOIN
 
             return $this->redirectToRoute('app_login');
         }

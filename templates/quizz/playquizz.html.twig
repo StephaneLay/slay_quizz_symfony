@@ -4,9 +4,17 @@
 
 {% block body %}
 
-{% for question in quizz.questions %}
+<form method="POST" action="{{ path('submit', { id: question.quizz.id }) }}">
+    <h2>{{question.content}}</h2>
+    
+    {% for answer in question.answers %}
+        <div>
+            <input type="radio" name="answer" value="{{ answer.isCorrect }}" required>
+            {{ answer.content }}
+        </div>
+    {% endfor %}
 
-    <p>{{question.content}}</p>
-{% endfor %}
+    <button type="submit">Valider</button>
+</form>
 
 {% endblock %}
