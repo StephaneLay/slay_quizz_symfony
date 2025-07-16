@@ -35,8 +35,8 @@ class SecurityController extends AbstractController
         throw new \LogicException('This method can be blank - it will be intercepted by the logout key on your firewall.');
     }
 
-    #[Route('/connect/sign-in', name: 'signin')]
-    public function Signin(
+    #[Route('/connect/subscribe', name: 'subscribe')]
+    public function subscribe(
         Request $request,
         EntityManagerInterface $em,
         UserPasswordHasherInterface $hasher
@@ -65,7 +65,7 @@ class SecurityController extends AbstractController
             return $this->redirectToRoute('app_login');
         }
 
-        return $this->render('security/signin.html.twig', [
+        return $this->render('security/subscribe.html.twig', [
             'controller_name' => 'HomeController',
             'form' => $signForm
 

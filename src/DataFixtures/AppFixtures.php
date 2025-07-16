@@ -31,6 +31,7 @@ class AppFixtures extends Fixture
 
         $categories = [];
         $quizzes = [];
+        $answers = [];
 
         $adminUser = new User();
         $adminUser->setEmail("admin@admin.fr")
@@ -39,7 +40,7 @@ class AppFixtures extends Fixture
             ->setPassword($this->hasher->hashPassword($adminUser, 'admin'));
         $manager->persist($adminUser);
 
-        foreach (SELF::CATEGORIES as $categoryCode=>$categoryName) {
+        foreach (self::CATEGORIES as $categoryCode => $categoryName) {
             $category = new Category();
             $category->setName($categoryCode);
             $categories[] = $category;
@@ -51,7 +52,7 @@ class AppFixtures extends Fixture
             $picPath = 'images/' . $category->getName() . '.jpg';
 
             $quizz->setCreatedAt(new DateTimeImmutable())
-                ->setTitle(SELF::CATEGORIES[$category->getName()])
+                ->setTitle(self::CATEGORIES[$category->getName()])
                 ->setCategory($category)
                 ->setImgUrl($picPath)
                 ->setDescription("Voici un super quiz de la catégorie " . $category->getName())
@@ -63,18 +64,28 @@ class AppFixtures extends Fixture
 
         foreach ($sheet as $line) {
             $question = new Question();
-            $question->setContent($line["Question"])->setQuizz($this->returnQuizz($line["Category"], $quizzes));
+            $question->setContent($line["Question"])
+                ->setQuizz($this->
+                    returnQuizz($line["Category"], $quizzes));
             $manager->persist($question);
 
             $answer = new Answer();
-            $answer->setIsCorrect(true)->setContent($line["Answer"])->setQuestion($question);
-            $manager->persist($answer);
+            $answer->setIsCorrect(true)->setContent($line["Answer"])->setVotes(0)->setQuestion($question);
+            $answers[] = $answer;
 
             for ($i = 1; $i < 4; $i++) {
                 $wrongAnswer = new Answer();
-                $wrongAnswer->setIsCorrect(false)->setContent($line["BadAnswer" . $i])->setQuestion($question);
-                $manager->persist($wrongAnswer);
+                $wrongAnswer->setIsCorrect(false)->setContent($line["BadAnswer" . $i])->setVotes(0)->setQuestion($question);
+                $answers[] = $wrongAnswer;
             }
+
+            //ON VEUT RANDOMISER L'ORDRE DES REPONSES
+            shuffle($answers);
+
+            foreach ($answers as $answer) {
+                $manager->persist($answer);
+            }
+
         }
 
 

@@ -1,0 +1,20 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello QuizzController!{% endblock %}
+
+{% block body %}
+
+<h2>{{question.content}}</h2>
+    
+<div class="answers-container">
+    {% for answer in question.answers %}
+        <div>
+            <input type="radio" name="answer" value="{{ answer.isCorrect }}" required>
+            {{ answer.content }}
+        </div>
+    {% endfor %}
+</div>
+    
+
+
+{% endblock %}

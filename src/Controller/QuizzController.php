@@ -7,6 +7,7 @@ use App\Entity\Category;
 use App\Entity\Question;
 use App\Entity\Quizz;
 use App\Entity\Results;
+use App\Repository\AnswerRepository;
 use App\Repository\QuestionRepository;
 use App\Repository\ResultsRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -69,7 +70,9 @@ final class QuizzController extends AbstractController
     public function submit(Quizz $quizz,
     ResultsRepository $resultsRepository,
     Request $request,
-    EntityManagerInterface $em
+    EntityManagerInterface $em,
+    QuestionService $questionService,
+    AnswerRepository $answerRepository
      ): Response
     {
        $user = $this->getUser();
@@ -79,6 +82,9 @@ final class QuizzController extends AbstractController
                 'quizz' => $quizz
             ]
         );
+        //ON VEUT RECUPRER LA QUESTION PUR DISPLAY LE REULTAT AVANT DE L'INCREMENTER
+        $question = $questionService->getQuestionByTracker($result->getQuestionTracker(),$quizz);
+        $totalVotes= $answerRepository->getSumVotesByQuestion($question->getId());
 
         $result->setQuestionTracker($result->getQuestionTracker()+1);
         $answer = $request->request->get('answer');
@@ -88,9 +94,17 @@ final class QuizzController extends AbstractController
 
         $em->flush();
         
+
         //PREVOIR 
 
-        return $this->redirectToRoute('playquizz', ['id' => $quizz->getId()]);
+        // return $this->redirectToRoute('playquizz', ['id' => $quizz->getId()]);
+
+        return $this->render('quizz/displayanswer.html.twig', [
+            'controller_name' => 'QuizzController',
+            'question' => $question,
+            'totalVotes' => $totalVotes
+
+        ]);
     }
    
 }
