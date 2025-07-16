@@ -14,6 +14,14 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+    const CATEGORIES = [
+        'CS' => 'Cinéma & Series',
+        'HG' => 'Histoire & Géographie',
+        'JV' => 'Jeux Vidéos',
+        'MU' => 'Musique',
+        'NS' => 'Nature & Sciences',
+        'SL' => 'Sports & Loisirs'
+    ];
     public function __construct(private UserPasswordHasherInterface $hasher)
     {
     }
@@ -24,8 +32,6 @@ class AppFixtures extends Fixture
         $categories = [];
         $quizzes = [];
 
-        $categoriesName = ['CS', 'HG', 'JV', 'MU', 'NS', 'SL'];
-
         $adminUser = new User();
         $adminUser->setEmail("admin@admin.fr")
             ->setName("admin")
@@ -33,9 +39,9 @@ class AppFixtures extends Fixture
             ->setPassword($this->hasher->hashPassword($adminUser, 'test'));
         $manager->persist($adminUser);
 
-        foreach ($categoriesName as $categoryName) {
+        foreach (SELF::CATEGORIES as $categoryCode=>$categoryName) {
             $category = new Category();
-            $category->setName($categoryName);
+            $category->setName($categoryCode);
             $categories[] = $category;
             $manager->persist($category);
         }
@@ -45,7 +51,7 @@ class AppFixtures extends Fixture
             $picPath = 'images/' . $category->getName() . '.jpg';
 
             $quizz->setCreatedAt(new DateTimeImmutable())
-                ->setTitle($this->returnTitle($category->getName()))
+                ->setTitle(SELF::CATEGORIES[$category->getName()])
                 ->setCategory($category)
                 ->setImgUrl($picPath)
                 ->setDescription("Voici un super quiz de la catégorie " . $category->getName())
@@ -99,21 +105,5 @@ class AppFixtures extends Fixture
         }
     }
 
-    private function returnTitle(string $codeName)
-    {
-        switch ($codeName) {
-            case 'CS':
-                return 'Cinéma & Series';
-            case 'HG':
-                return 'Histoire & Géographie';
-            case 'JV':
-                return 'Jeux Vidéos';
-            case 'MU':
-                return 'Musique';
-            case 'NS':
-                return 'Nature & Sciences';
-            case 'SL':
-                return 'Sports & Loisirs';
-        }
-    }
+
 }
