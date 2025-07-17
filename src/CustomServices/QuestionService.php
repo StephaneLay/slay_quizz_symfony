@@ -11,6 +11,9 @@ class QuestionService{
 
     public function getQuestionByTracker(int $trackerValue,Quizz $quizz){
         $questions = $this->questionRepository->findBy(['quizz'=>$quizz,],['id'=>'ASC'],1,$trackerValue);
+        if (empty($questions)) {
+            return null;
+        }
         return $questions[0];
     }
 }

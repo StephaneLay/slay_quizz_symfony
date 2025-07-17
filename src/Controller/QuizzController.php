@@ -11,6 +11,7 @@ use App\Entity\Results;
 use App\Repository\AnswerRepository;
 use App\Repository\QuestionRepository;
 use App\Repository\ResultsRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,6 +20,12 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class QuizzController extends AbstractController
 {
+    const ENDQUIZZ_MESSAGES = [
+        0.33 => "Mouais bin c'est pas foufou comme résultat y a pas de quoi flamber",
+        0.66 => "Franchement pas mal du tout j'ai envie de dire pas mal du tout",
+        1 => "Bah bravo t'es juste un.e monstre, ca m'épate ce talent, j'ai meme envie de dire ca m'emeut"
+    ];
+
     #[Route('/quizz/{id}', name: 'quizz')]
     public function index(Quizz $quizz): Response
     {
@@ -36,34 +43,36 @@ final class QuizzController extends AbstractController
         QuestionService $questionService,
         EntityManagerInterface $em
     ): Response {
-        $user = $this->getUser();
-        $result = $resultsRepository->findOneBy(
-            [
-                'user' => $user,
-                'quizz' => $quizz
-            ]
-        );
-        if ($result) {
-            $question = $questionService->getQuestionByTracker($result->getQuestionTracker(), $quizz);
 
-        } else {
-            $newResult = new Results();
-            $newResult->setUser($user)
+        $user = $this->getUser();
+
+        $result = $resultsRepository->findOneBy([
+            'user' => $user,
+            'quizz' => $quizz,
+        ]);
+
+        //Si pas d'historique user/quizz, on en crée un
+        if (!$result) {
+            $result = (new Results())
+                ->setUser($user)
                 ->setQuizz($quizz)
                 ->setScore(0)
                 ->setQuestionTracker(0);
 
-            $em->persist($newResult);
+            $em->persist($result);
             $em->flush();
-
-            $question = $questionService->getQuestionByTracker(0, $quizz);
         }
 
+        $question = $questionService->getQuestionByTracker($result->getQuestionTracker(), $quizz);
+
+        //Si pas de question= si fin du quizz
+        if (!$question) {
+            return $this->redirectToRoute('endquizz', ['id' => $quizz->getId()]);
+        }
 
         return $this->render('quizz/playquizz.html.twig', [
-            'controller_name' => 'QuizzController',
-            'question' => $question
-
+            'question' => $question,
+            'quizz' => $quizz,
         ]);
     }
 
@@ -93,7 +102,7 @@ final class QuizzController extends AbstractController
 
         //BOOLEEN DONC INCREMENTE QUE SI REPONSE CORRECTE
         $result->setScore($result->getScore() + intval($userAnswer->isCorrect()));
-        
+
         $em->flush();
 
 
@@ -128,6 +137,44 @@ final class QuizzController extends AbstractController
             'userAnswer' => $userAnswer,
             'totalVotes' => $totalVotes,
             'message' => $userAnswer->isCorrect() ? 'Bonne réponse !' : 'Mauvaise réponse'
+        ]);
+    }
+
+    #[Route('/quizz/{id}/end', name: 'endquizz')]
+    public function endquizz(
+        Quizz $quizz,
+        ResultsRepository $resultsRepository,
+        EntityManagerInterface $em
+    ) {
+        $user = $this->getUser();
+        $result = $resultsRepository->findOneBy(
+            [
+                'user' => $user,
+                'quizz' => $quizz
+            ]
+        );
+
+        $result->setCompletedAt(new DateTimeImmutable());
+        $em->flush();
+
+        $topResults = $resultsRepository->findBy([], ['score' => 'DESC'], 5);
+
+        $message = "Un sans faute ! Impressionant";
+        $ratio = round($result->getScore() / count($quizz->getQuestions()), 2);
+
+        foreach (self::ENDQUIZZ_MESSAGES as $compareRatio => $endMessage) {
+            if ($ratio < $compareRatio) {
+                $message = $endMessage;
+                break;
+            }
+        }
+
+        return $this->render('quizz/endquizz.html.twig', [
+            'controller_name' => 'QuizzController',
+            'quizz' => $quizz,
+            'message' => $message,
+            'userResult' => $result,
+            'topResults' => $topResults
         ]);
     }
 }

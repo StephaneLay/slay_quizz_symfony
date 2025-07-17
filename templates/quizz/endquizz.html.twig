@@ -1,0 +1,72 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Résultats du quizz{% endblock %}
+
+{% block body %}
+
+<h1>Résultats du quizz "{{ quizz.title }}"</h1>
+
+<h2>{{ message }}</h2>
+
+<h3>Top 5 des meilleurs scores :</h3>
+
+<div class="leaderboard">
+    {% for result in topResults %}
+        {% set isUser = result.user.id == app.user.id %}
+        <div class="bar-container {{ isUser ? 'current-user' : '' }}">
+            <span class="rank">#{{ loop.index }}</span>
+            <span class="name">{{ result.user.name }}</span>
+            <div class="bar" style="width: {{ (result.score / quizz.questions|length) * 100 }}%;">
+                <span class="score">{{ result.score }}</span>
+            </div>
+        </div>
+    {% else %}
+        <p>Pas encore de participants !</p>
+    {% endfor %}
+</div>
+
+<a href="{{path('play')}}">Retourner sur la page d'accueil</a>
+
+<style>
+.leaderboard {
+    max-width: 600px;
+    margin-top: 30px;
+}
+.bar-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+.rank {
+    width: 30px;
+    font-weight: bold;
+}
+.name {
+    width: 150px;
+}
+.bar {
+    height: 20px;
+    background-color: #ddd;
+    position: relative;
+    flex-grow: 1;
+    margin-left: 10px;
+    border-radius: 5px;
+}
+.bar span.score {
+    position: absolute;
+    right: 5px;
+    top: 0;
+    font-size: 12px;
+    line-height: 20px;
+}
+.current-user .bar {
+    background-color: #4CAF50;
+    font-weight: bold;
+}
+.current-user .name {
+    font-weight: bold;
+    color: #4CAF50;
+}
+</style>
+
+{% endblock %}
