@@ -1,7 +1,20 @@
-<div class="quizz-card">
-	<a href="{{path('quizz',{id:quizz.id})}}" class="quizz-button">
-		<img src="{{ asset(quizz.imgUrl) }}"/>
-		<p>{{quizz.title}}</p>
-	</a>
-
+<div class="quizz-card {{ userResult and userResult.completedAt ? 'completed' : '' }}">
+	{% if userResult and userResult.completedAt %}
+		<a href="{{ path('endquizz', { id: quizz.id }) }}" class="quizz-button disabled">
+        <div style="background:center / cover no-repeat url('{{ asset(quizz.imgUrl) }}')  ;">
+        Completé : {{userResult.score}} / {{quizz.questions|length}}
+        </div>
+		
+			<p>{{ quizz.title }}<br><small>Voir classement</small>
+			</p>
+		</a>
+	{% else %}
+		<a href="{{ path('quizz', { id: quizz.id }) }}" class="quizz-button">
+			<div style="background:center / cover no-repeat url('{{ asset(quizz.imgUrl) }}')   ;"></div>
+			<p>{{ quizz.title }}</p>
+		</a>
+	{% endif %}
 </div>
+
+
+

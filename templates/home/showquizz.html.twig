@@ -8,10 +8,16 @@
 <div class="quizz-container">
 
 {% for quizz in quizzes %}
-
-{% include 'parts/quizzcard.html.twig' with {'quizz' : quizz} %}
-
-
+    {% set userResult = null %}
+    {% for result in userResults %} 
+        {% if result.quizz.id == quizz.id %}
+            {% set userResult = result %}
+        {% endif %}
+    {% endfor %}
+    {% include 'parts/quizzcard.html.twig' with {
+        'quizz': quizz,
+        'userResult': userResult
+    } %}
 {% endfor %}
 </div>
 

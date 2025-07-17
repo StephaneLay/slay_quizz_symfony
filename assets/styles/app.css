@@ -1,18 +1,18 @@
 /* GLOBAL */
 
-*{
+* {
     margin: 0;
     padding: 0;
 }
 
-body{
+body {
     background-color: #264653;
 }
 
 /* NAVBAR */
 
 
-header nav{
+header nav {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -26,32 +26,33 @@ header nav{
 
 /* Page login */
 
-.login-form{
+.login-form {
     width: 30%;
     margin: auto;
     background-color: #2a9d8f;
 }
 
-.login-form h1 ,.login-form h2{
+.login-form h1,
+.login-form h2 {
     font-size: 1.5em;
     text-align: center;
-    margin : 1rem 0;
-    
+    margin: 1rem 0;
+
 }
 
-.input-container{
+.input-container {
     display: flex;
     flex-direction: column;
     width: 60%;
     margin: auto;
 }
 
-.input-container>input{
+.input-container>input {
     margin-bottom: 1.5rem;
     height: 2rem;
 }
 
-.login-button{
+.login-button {
     margin-top: 1rem;
     padding: 1rem;
     background-color: #e76f51;
@@ -60,33 +61,34 @@ header nav{
 
 /* Page Subscribe */
 
-.subscribe-container{
+.subscribe-container {
     width: 30%;
     margin: auto;
     background-color: #2a9d8f;
 }
 
-.subscribe-container h1{
+.subscribe-container h1 {
     margin: 2rem 0;
     text-align: center;
 }
 
-#subscription_form{
+#subscription_form {
     width: 60%;
     margin: auto;
 }
 
-#subscription_form > *{
+#subscription_form>* {
     display: flex;
     flex-direction: column;
 }
 
-#subscription_form input , #subscription_form select{
+#subscription_form input,
+#subscription_form select {
     margin-bottom: 1.5rem;
     height: 2rem;
 }
 
-#subscription_form_Subscribe{
+#subscription_form_Subscribe {
     margin-bottom: 1rem;
     padding: 1rem;
     background-color: #e76f51;
@@ -97,17 +99,17 @@ header nav{
 
 /* Page root */
 
-.homelinkcontainer{
+.homelinkcontainer {
     display: flex;
     flex-direction: column;
     width: 40%;
-    margin:auto
+    margin: auto
 }
 
-.homelinkcontainer a{
+.homelinkcontainer a {
     text-align: center;
     text-decoration: none;
-    background-color:#2a9d8f ;
+    background-color: #2a9d8f;
     padding: 2rem;
     color: #e9c46a;
     margin-top: 2rem;
@@ -117,7 +119,7 @@ header nav{
 
 /* Page show quizz */
 
-.quizz-container{
+.quizz-container {
     display: flex;
     width: 80%;
     margin: auto;
@@ -125,48 +127,51 @@ header nav{
     justify-content: center;
 }
 
-.quizz-card{
+.quizz-card {
     text-align: center;
     font-size: 1.5em;
     background-color: #2a9d8f;
     border-radius: 10px;
+
+}
+
+.quizz-card div{
     
+    height : 15rem;
+
+}
+.disabled > div {
+    filter: grayscale(100%) brightness(0.7);
 }
 
-.quizz-card img{
-    border-radius: 10px 10px 0 0 ;
-}
-
-.quizz-card p{
+.quizz-card p {
     margin: 1rem 0;
-    
+
 }
 
-.quizz-card a{
+.quizz-card a {
     text-decoration: none;
     color: #e9c46a;
 }
 
-
-
-
-.quizz-container > *{
-    margin : 2rem;
+.completed {
+    background-color: black;
 }
 
-.quizz-button img{
+
+.quizz-button img {
     width: 20rem;
     height: 20rem;
 }
 
-.user-answer{
+.user-answer {
     color: yellow;
 }
 
-.good-answer{
+.good-answer {
     background-color: green;
 }
 
-.wrong-answer{
+.wrong-answer {
     background-color: red;
 }
