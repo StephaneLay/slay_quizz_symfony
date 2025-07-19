@@ -157,7 +157,7 @@ final class QuizzController extends AbstractController
         $result->setCompletedAt(new DateTimeImmutable());
         $em->flush();
 
-        $topResults = $resultsRepository->findBy([], ['score' => 'DESC'], 5);
+        $topResults = $resultsRepository->findTopResultsForQuizz($quizz->getId());
 
         $message = "Un sans faute ! Impressionant";
         $ratio = round($result->getScore() / count($quizz->getQuestions()), 2);

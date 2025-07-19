@@ -1,29 +1,31 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello QuizzController!{% endblock %}
+{% block title %}Résultat de la question
+{% endblock %}
 
 {% block body %}
+	{% include 'parts/navbar.html.twig' %}
+	<div class="results-page">
+		<h1 class="question-title">{{ question.content }}</h1>
+		<h2 class="feedback-message">{{ message }}</h2>
 
-<h1>{{question.content}}</h1>
-<h2>{{message}}</h2>
-    
-<div class="answers-container">
-    {% for answer in question.answers %}
+		<div class="answers-container">
+			{% for answer in question.answers %}
+				<p class="
+						                answer-block
+						                {% if answer == userAnswer %} user-answer {% endif %}
+						                {% if answer.isCorrect %} good-answer {% else %} wrong-answer {% endif %}
+						            ">
+					{{ answer.content }}
+					–
+					{{ (answer.votes / totalVotes * 100)|number_format(1, '.', '') }}
+					%
+				</p>
+			{% endfor %}
+		</div>
 
-    <p class="
-    {% if answer == userAnswer %}
-    user-answer
-    {% endif %}
-    {% if answer.isCorrect %}
-    good-answer
-    {% else %}
-    wrong-answer
-    {% endif %}
-    ">{{ answer.content }} {{ (answer.votes / totalVotes * 100)|number_format(1, '.', '') }} %
-    {% endfor %}
-    </p>
-</div>
-    
-<a href="{{ path('playquizz', { id: question.quizz.id }) }}">Question suivante</a>
-
+		<div class="next-link-container">
+			<a class="next-link" href="{{ path('playquizz', { id: question.quizz.id }) }}">Question suivante</a>
+		</div>
+	</div>
 {% endblock %}

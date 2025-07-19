@@ -1,18 +1,18 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello QuizzController!{% endblock %}
+{% block title %}
+	{{quizz.title}}
+{% endblock %}
 
 {% block body %}
+	{% include 'parts/navbar.html.twig' %}
 
-<div>
-<h1>{{quizz.title}}</h1>
-<img src="{{ asset(quizz.imgUrl) }}"  />
-<p>{{quizz.description}}</p>
-
-<a href="{{path('playquizz',{id:quizz.id})}}" class="quizz-button">Play this quizz</a>
-</div>
-
-
+	<div class="quizz-start-card">
+		<h1>{{quizz.title}}</h1>
+		<img src="{{ asset(quizz.imgUrl) }}"/>
+		<p>{{quizz.description}}</p>
+		<a href="{{path('playquizz',{id:quizz.id})}}" class="quizz-start">Play this quizz</a>
+	</div>
 
 
 {% endblock %}

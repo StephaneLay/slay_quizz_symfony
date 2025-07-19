@@ -1,20 +1,26 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello QuizzController!{% endblock %}
+{% block title %}Play quizz
+{% endblock %}
 
 {% block body %}
+	{% include 'parts/navbar.html.twig' %}
 
-<form method="POST" action="{{ path('submit', { id: question.quizz.id }) }}">
-    <h2>{{question.content}}</h2>
-    
-    {% for answer in question.answers %}
-        <div>
-            <input type="radio" name="answer" value="{{ answer.id }}" required>
-            {{ answer.content }}
-        </div>
-    {% endfor %}
 
-    <button type="submit">Valider</button>
-</form>
+	<form class="question-form" method="POST" action="{{ path('submit', { id: question.quizz.id }) }}">
+		<h1>{{ question.content }}</h1>
+
+		<div class="answer-container">
+			{% for answer in question.answers %}
+				<label>
+					<input class="question-input" type="radio" name="answer" value="{{ answer.id }}" required>
+					{{ answer.content }}
+				</label>
+			{% endfor %}
+		</div>
+
+		<button type="submit">Valider</button>
+	</form>
+
 
 {% endblock %}

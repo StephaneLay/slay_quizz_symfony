@@ -5,21 +5,30 @@
     padding: 0;
 }
 
-body {
-    background-color: #264653;
-}
+
 
 /* NAVBAR */
-
 
 header nav {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
+    justify-content: center;
     align-items: center;
-    background-color: #e76f51;
-    padding: 2rem;
-    color: #e9c46a;
+    background-color: grey;
+    padding: 1rem;
+    color: white;
+}
+
+header nav>* {
+    margin: 0 2rem;
+}
+
+header a {
+    text-decoration: none;
+    padding: .8rem;
+    color: white;
+    background-color: black;
+    border-radius: 15px;
 }
 
 /* PAGES SECURITY (LOGIN + SUBSCRIBE) */
@@ -28,8 +37,9 @@ header nav {
 
 .login-form {
     width: 30%;
-    margin: auto;
-    background-color: #2a9d8f;
+    margin: 2rem auto;
+    background-color: rgb(163, 156, 156);
+    border: 1px solid black;
 }
 
 .login-form h1,
@@ -37,7 +47,6 @@ header nav {
     font-size: 1.5em;
     text-align: center;
     margin: 1rem 0;
-
 }
 
 .input-container {
@@ -55,7 +64,7 @@ header nav {
 .login-button {
     margin-top: 1rem;
     padding: 1rem;
-    background-color: #e76f51;
+    background-color: #0a0a0a;
     color: white;
 }
 
@@ -63,8 +72,9 @@ header nav {
 
 .subscribe-container {
     width: 30%;
-    margin: auto;
-    background-color: #2a9d8f;
+    margin: 2rem auto;
+    background-color: rgb(163, 156, 156);
+    padding-top: .5rem;
 }
 
 .subscribe-container h1 {
@@ -91,7 +101,7 @@ header nav {
 #subscription_form_Subscribe {
     margin-bottom: 1rem;
     padding: 1rem;
-    background-color: #e76f51;
+    background-color: #0a0a0a;
     color: white;
 }
 
@@ -109,9 +119,9 @@ header nav {
 .homelinkcontainer a {
     text-align: center;
     text-decoration: none;
-    background-color: #2a9d8f;
+    background-color: #141616;
     padding: 2rem;
-    color: #e9c46a;
+    color: white;
     margin-top: 2rem;
     border-radius: 15px;
     font-size: 2em;
@@ -125,53 +135,230 @@ header nav {
     margin: auto;
     flex-wrap: wrap;
     justify-content: center;
+    margin-top: 2rem;
 }
 
 .quizz-card {
     text-align: center;
     font-size: 1.5em;
-    background-color: #2a9d8f;
+    background-color: black;
     border-radius: 10px;
+    width: 30%;
+    margin: 1rem;
+}
+
+.quizz-card div {
+    height: 15rem;
 
 }
 
-.quizz-card div{
-    
-    height : 15rem;
-
-}
-.disabled > div {
+.disabled>div {
     filter: grayscale(100%) brightness(0.7);
 }
 
-.quizz-card p {
+.card-text {
     margin: 1rem 0;
+}
 
+.disabled>div>p {
+    padding-top: 6rem;
+    border-radius: 10px;
+    font-size: 2em;
+    color: rgb(207, 115, 115);
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
 }
 
 .quizz-card a {
     text-decoration: none;
-    color: #e9c46a;
+    color: white;
 }
 
 .completed {
+    background-color: rgb(1, 31, 14);
+}
+
+/* Page Quizz */
+
+.quizz-start-card {
+    text-align: center;
+    width: fit-content;
+    margin: 2rem auto;
+    padding: 1rem;
     background-color: black;
+    color: white;
+    border-radius: 10px;
+}
+
+.quizz-start-card>* {
+    margin: .5rem auto;
+
+}
+
+.quizz-start-card h1 {
+    font-size: 2.5em;
+}
+
+.quizz-start-card img {
+    height: 10rem;
+}
+
+.quizz-start {
+    text-decoration: none;
+    padding: .5rem;
+    background-color: rgb(94, 94, 167);
+    color: white;
+    border-radius: 15px;
 }
 
 
-.quizz-button img {
-    width: 20rem;
-    height: 20rem;
+/* Page Quizz Play */
+
+.question-form {
+    max-width: 600px;
+    margin: 50px auto;
+    padding: 30px;
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    font-family: sans-serif;
+    color: #222;
 }
 
-.user-answer {
-    color: yellow;
+.question-form h1 {
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+    text-align: center;
 }
 
-.good-answer {
-    background-color: green;
+.answer-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
 }
 
-.wrong-answer {
-    background-color: red;
+.question-input {
+    margin-right: 10px;
+    transform: scale(1.2);
+    accent-color: #007BFF;
+    /* bleu doux */
+    cursor: pointer;
 }
+
+.answer-container label {
+    display: flex;
+    align-items: center;
+    font-size: 1rem;
+    padding: 8px 12px;
+    border-radius: 6px;
+    background-color: #f7f7f7;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.answer-container label:hover {
+    background-color: #e0e0e0;
+}
+
+button[type="submit"] {
+    display: block;
+    margin: 0 auto;
+    padding: 10px 25px;
+    font-size: 1rem;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+/* Page Answer Display */
+
+.results-page {
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #ffffff;
+  color: #222;
+  padding: 20px;
+}
+
+/* Titre principal de la page de résultats */
+.results-page h1,
+.results-page .question-title {
+  font-size: 1.8rem;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+/* Message de feedback (bonnes/mauvaises réponses) */
+.results-page h2,
+.results-page .feedback-message {
+  font-size: 1.2rem;
+  font-weight: 400;
+  text-align: center;
+  margin-bottom: 30px;
+  color: #444;
+}
+
+.results-page .answers-container {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.results-page .answer-block {
+  padding: 12px 18px;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+  font-size: 1rem;
+  line-height: 1.4;
+  transition: background-color 0.3s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Réponse correcte */
+.results-page .good-answer {
+  border-left: 5px solid #28a745;
+  background-color: #e6ffe6;
+}
+
+/* Réponse incorrecte */
+.results-page .wrong-answer {
+  border-left: 5px solid #ccc;
+}
+
+/* Réponse sélectionnée par l'utilisateur */
+.results-page .user-answer {
+  font-weight: bold;
+  background-color: #e0f0ff;
+}
+
+/* Lien "question suivante" */
+.results-page .next-link-container {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.results-page .next-link {
+  display: inline-block;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  text-decoration: none;
+  background-color: #007BFF;
+  color: white;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.results-page .next-link:hover {
+  background-color: #0056b3;
+}
+
