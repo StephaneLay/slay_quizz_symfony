@@ -177,6 +177,12 @@ header a {
     background-color: rgb(1, 31, 14);
 }
 
+.authorlabel{
+    color: white;
+    height: fit-content;
+    font-size: .5em;
+}
+
 /* Page Quizz */
 
 .quizz-start-card {
@@ -280,85 +286,101 @@ button[type="submit"]:hover {
 /* Page Answer Display */
 
 .results-page {
-  font-family: 'Segoe UI', sans-serif;
-  background-color: #ffffff;
-  color: #222;
-  padding: 20px;
+    font-family: 'Segoe UI', sans-serif;
+    background-color: #ffffff;
+    color: #222;
+    padding: 20px;
 }
 
 /* Titre principal de la page de résultats */
 .results-page h1,
 .results-page .question-title {
-  font-size: 1.8rem;
-  font-weight: 600;
-  text-align: center;
-  margin-bottom: 10px;
+    font-size: 1.8rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 10px;
 }
 
 /* Message de feedback (bonnes/mauvaises réponses) */
 .results-page h2,
 .results-page .feedback-message {
-  font-size: 1.2rem;
-  font-weight: 400;
-  text-align: center;
-  margin-bottom: 30px;
-  color: #444;
+    font-size: 1.2rem;
+    font-weight: 400;
+    text-align: center;
+    margin-bottom: 30px;
+    color: #444;
 }
 
 .results-page .answers-container {
-  max-width: 600px;
-  margin: 0 auto;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .results-page .answer-block {
-  padding: 12px 18px;
-  border-radius: 8px;
-  background-color: #f7f7f7;
-  font-size: 1rem;
-  line-height: 1.4;
-  transition: background-color 0.3s ease;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    padding: 12px 18px;
+    border-radius: 8px;
+    background-color: #f7f7f7;
+    font-size: 1rem;
+    line-height: 1.4;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 /* Réponse correcte */
 .results-page .good-answer {
-  border-left: 5px solid #28a745;
-  background-color: #e6ffe6;
+    border-left: 5px solid #28a745;
+    background-color: #e6ffe6;
 }
 
 /* Réponse incorrecte */
 .results-page .wrong-answer {
-  border-left: 5px solid #ccc;
+    border-left: 5px solid #ccc;
 }
 
 /* Réponse sélectionnée par l'utilisateur */
 .results-page .user-answer {
-  font-weight: bold;
-  background-color: #e0f0ff;
+    font-weight: bold;
+    background-color: #e0f0ff;
 }
 
 /* Lien "question suivante" */
 .results-page .next-link-container {
-  text-align: center;
-  margin-top: 40px;
+    text-align: center;
+    margin-top: 40px;
 }
 
 .results-page .next-link {
-  display: inline-block;
-  padding: 10px 20px;
-  font-size: 1rem;
-  font-weight: 500;
-  text-decoration: none;
-  background-color: #007BFF;
-  color: white;
-  border-radius: 6px;
-  transition: background-color 0.3s ease;
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 1rem;
+    font-weight: 500;
+    text-decoration: none;
+    background-color: #007BFF;
+    color: white;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
 }
 
 .results-page .next-link:hover {
-  background-color: #0056b3;
+    background-color: #0056b3;
 }
 
+/* Page Edit */
+
+.grid-edit{
+    display: flex;
+    flex-wrap: wrap;
+    list-style: none;
+}
+
+.grid-edit li {
+    list-style: none;
+}
+
+.title-edit{
+    text-align: center;
+    margin: 1rem;
+}

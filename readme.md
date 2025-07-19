@@ -3,15 +3,14 @@
 
 LE FORMULAIRE SORT PLEIN D'ERREURS QU'ON DOIT GERER AVEC DES MESSAGES FLASH/FORM ERROR ( duplicata mail par ex)
 
-ET BIEN SUR TOUS LES ECRANS MANAGE ET LES VOTERS
+ON VA DEVOIR CREER PAGE DE CREATION ET DUPDATE
+
+SERONT PLUTOT SIMILAIRE => upload photo pour quizz
+
+puis ajout questions en bas + modif questions avec content/etc...
+
+Si edité et modifié , alors event personnalisé qui notifiera les users ??(a reflechir)
 
 
 
 
-
-PALETTE DE COULEUR
-#264653
-#2a9d8f
-#e9c46a
-#f4a261
-#e76f51

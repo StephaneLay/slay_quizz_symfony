@@ -6,26 +6,18 @@
 {% block body %}
 	{% include 'parts/navbar.html.twig' %}
 
-	<h1>Liste des quizz que vous pouvez modifier</h1>
+	<h1 class="title-edit">Liste des quizz que vous pouvez modifier</h1>
 
 	{% if quizzes is empty %}
 		<p>Aucun quizz à afficher.</p>
 	{% else %}
-		<ul>
+		<div class="grid-edit">
 			{% for quizz in quizzes %}
-				<li>
-					<strong>{{ quizz.title }}</strong><br>
-					Créé par :
-					{{ quizz.author.name }}<br>
 
-					{% if is_granted('QUIZ_EDIT', quizz) %}
-						<a href="" class="">
-							Modifier
-						</a>
-					{% endif %}
-				</li>
-				<hr>
+				{% include 'parts/quizzeditcard.html.twig' with {
+        'quizz': quizz,
+    } %}
 			{% endfor %}
-		</ul>
-	{% endif %}
-{% endblock %}
+
+		{% endif %}
+	{% endblock %}

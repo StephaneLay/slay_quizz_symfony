@@ -8,12 +8,14 @@
 			<p class="card-text">{{ quizz.title }}<br><small>Voir classement</small>
 			</p>
 		</a>
+		
 	{% else %}
 		<a href="{{ path('quizz', { id: quizz.id }) }}" class="quizz-button">
 			<div style="background:center / cover no-repeat url('{{ asset(quizz.imgUrl) }}')   ;"></div>
 			<p  class="card-text">{{ quizz.title }}</p>
 		</a>
 	{% endif %}
+	<p class="authorlabel">Created by : {{quizz.author.name}}</p>
 </div>
 
 

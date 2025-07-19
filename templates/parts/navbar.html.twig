@@ -1,7 +1,8 @@
-
 <header>
-    <nav>
-        <p>Logged in as {{app.user.name}}</p>
-        <a href="{{ path('app_logout') }}">Logout</a>
-    </nav>
+	<nav>
+		<a href="{{path('home')}}">Home</a>
+		<p>Logged in as
+			{{app.user.name}}</p>
+		<a href="{{ path('app_logout') }}">Logout</a>
+	</nav>
 </header>
