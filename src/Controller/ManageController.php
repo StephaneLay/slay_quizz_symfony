@@ -10,6 +10,7 @@ use App\Repository\QuizzRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -97,9 +98,8 @@ final class ManageController extends AbstractController
             // Nettoyage + validation des questions
             foreach ($quizz->getQuestions() as $questionKey => $question) {
 
-                
+
                 if (empty(trim($question->getContent()))) {
-                    // $errors[] = "La question " . ($questionKey + 1) . " n'a pas d'intitulé.";
                     $quizz->removeQuestion($question);
                     continue;
                 }
@@ -121,11 +121,13 @@ final class ManageController extends AbstractController
                 }
 
                 if ($validAnswers < 4) {
+                    $errors[] = "Les 4 réponses doivent avoir du contenu";
                     $question->removeAnswer($answer);
                     continue;
                 }
 
                 if ($correctAnswers !== 1) {
+                    $errors[] = "Une réponse et une seule doit etre correcte pour chaque question";
                     $question->removeAnswer($answer);
                     continue;
                 }
@@ -133,18 +135,26 @@ final class ManageController extends AbstractController
                 $question->setQuizz($quizz);
             }
 
+
+            if (count($quizz->getQuestions()) < 1) {
+                $errors[] = "Il faut au moins une question valide";
+            }
+
+
             // Retour si erreurs
             if (count($errors) > 0) {
                 foreach ($errors as $msg) {
                     $this->addFlash('error', $msg);
                 }
-
-                return $this->render('manage/create.html.twig', [
-                    'form' => $form->createView(),
-                ]);
+                return $this->redirectToRoute('create',['nb'=>$nb]);
+                // return $this->render('manage/create.html.twig', [
+                //     'form' => $form->createView(),
+                //     'nb' => $nb,
+                // ]);
             }
 
             // Si tout est bon
+
             foreach ($quizz->getQuestions() as $question) {
                 $em->persist($question);
                 foreach ($question->getAnswers() as $answer) {

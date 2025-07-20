@@ -1,14 +1,19 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}HomePage{% endblock %}
+{% block title %}HomePage
+{% endblock %}
 
 {% block body %}
-{% include 'parts/navbar.html.twig' %}
+	{% include 'parts/navbar.html.twig' %}
 
-<div class="homelinkcontainer">
-    <a href="{{path('play')}}">Jouer</a>
-    <a href="{{path('choosesize')}}">Creer un quizz</a>
-    <a href="{{path('manage')}}">Gerer vos quizz</a>
-</div>
+	{% for message in app.flashes('success') %}
+		<div class="alert alert-danger">{{ message }}</div>
+	{% endfor %}
+
+	<div class="homelinkcontainer">
+		<a href="{{path('play')}}">Jouer</a>
+		<a href="{{path('choosesize')}}">Creer un quizz</a>
+		<a href="{{path('manage')}}">Gerer vos quizz</a>
+	</div>
 
 {% endblock %}

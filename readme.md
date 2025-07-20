@@ -12,6 +12,6 @@ puis ajout questions en bas + modif questions avec content/etc...
 
 Si edité et modifié , alors event personnalisé qui notifiera les users ??(a reflechir)
 
-
+Jouer avec les lgins/inscription, voir pour que les redirections marchent toujours , voir ce qui se passe si on se reco et qu'on est deja co par ex
 
 
