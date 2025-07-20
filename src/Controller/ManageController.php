@@ -96,22 +96,24 @@ final class ManageController extends AbstractController
 
             // Nettoyage + validation des questions
             foreach ($quizz->getQuestions() as $questionKey => $question) {
+
+                
                 if (empty(trim($question->getContent()))) {
                     // $errors[] = "La question " . ($questionKey + 1) . " n'a pas d'intitulé.";
+                    $quizz->removeQuestion($question);
                     continue;
                 }
 
                 $validAnswers = 0;
                 $correctAnswers = 0;
 
-                foreach ($question->getAnswers() as $answerKey => $answer) {
-                    if (empty(trim($answer->getContent()))) {
-                        // $errors[] = "Une réponse de la question " . ($questionKey + 1) . " est vide.";
-                    } else {
+                foreach ($question->getAnswers() as $answer) {
+                    if (!empty(trim($answer->getContent()))) {
+                        //SI REP NON VIDE
                         $validAnswers++;
                     }
-
                     if ($answer->isCorrect()) {
+                        //SI BONNEREP COCHEE
                         $correctAnswers++;
                     }
 
@@ -119,11 +121,13 @@ final class ManageController extends AbstractController
                 }
 
                 if ($validAnswers < 4) {
-                    $errors[] = "La question " . ($questionKey + 1) . " doit avoir 4 réponses remplies.";
+                    $question->removeAnswer($answer);
+                    continue;
                 }
 
                 if ($correctAnswers !== 1) {
-                    $errors[] = "La question " . ($questionKey + 1) . " doit avoir **exactement une seule** bonne réponse.";
+                    $question->removeAnswer($answer);
+                    continue;
                 }
 
                 $question->setQuizz($quizz);
@@ -141,15 +145,22 @@ final class ManageController extends AbstractController
             }
 
             // Si tout est bon
+            foreach ($quizz->getQuestions() as $question) {
+                $em->persist($question);
+                foreach ($question->getAnswers() as $answer) {
+                    $answer->setVotes(0);
+                    $em->persist($answer);
+                }
+            }
             $quizz->setAuthor($this->getUser());
             $quizz->setCreatedAt(new DateTimeImmutable());
-
             $em->persist($quizz);
+
             $em->flush();
 
             $this->addFlash('success', 'Le quiz a bien été créé !');
 
-            // return $this->redirectToRoute('home');
+            return $this->redirectToRoute('home');
         }
 
         return $this->render('manage/create.html.twig', [
