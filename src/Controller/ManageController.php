@@ -7,11 +7,15 @@ use App\Entity\Question;
 use App\Entity\Quizz;
 use App\Form\QuizzType;
 use App\Repository\QuizzRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class ManageController extends AbstractController
 {
@@ -42,19 +46,16 @@ final class ManageController extends AbstractController
     }
 
     #[Route('/quiz/create/{nb}', name: 'create')]
-    public function create(Request $request, int $nb,EntityManagerInterface $em): Response
+    public function create(Request $request, int $nb, EntityManagerInterface $em, SluggerInterface $slugger): Response
     {
         $quizz = new Quizz();
 
         // Pré-génération de questions vides
         for ($i = 0; $i < $nb; $i++) {
             $question = new Question();
-
-            // Pré-générer 4 réponses par question
             for ($j = 0; $j < 4; $j++) {
                 $question->addAnswer(new Answer());
             }
-
             $quizz->addQuestion($question);
         }
 
@@ -62,31 +63,99 @@ final class ManageController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Filtrage des questions non remplies
-            foreach ($quizz->getQuestions() as $question) {
-                if (empty(trim($question->getContent()))) {
-                    $quizz->removeQuestion($question);
-                } else {
-                    foreach ($question->getAnswers() as $answer) {
-                        if (empty(trim($answer->getContent()))) {
-                            $question->removeAnswer($answer);
-                        }
-                    }
-                }
+            // Validation manuelle
+            $errors = [];
+
+            // Titre obligatoire
+            if (empty(trim($quizz->getTitle()))) {
+                $errors[] = "Le titre est obligatoire.";
             }
 
-            // Attribuer l’auteur
-            $quizz->setAuthor($this->getUser());
+            // Gestion de l'upload
+            /** @var UploadedFile|null $imageFile */
+            $imageFile = $form->get('img_url')->getData();
 
-            // Enregistrer le quiz
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('quiz_images_directory'), // à définir dans services.yaml
+                        $newFilename
+                    );
+                    $quizz->setImgUrl('/uploads/quizzes/' . $newFilename);
+                } catch (FileException $e) {
+                    $errors[] = "Erreur lors de l'upload de l'image.";
+                }
+            } else {
+                // Image par défaut
+                $quizz->setImgUrl('assets\images\default_quizz_pic.jpg');
+            }
+
+            // Nettoyage + validation des questions
+            foreach ($quizz->getQuestions() as $questionKey => $question) {
+                if (empty(trim($question->getContent()))) {
+                    // $errors[] = "La question " . ($questionKey + 1) . " n'a pas d'intitulé.";
+                    continue;
+                }
+
+                $validAnswers = 0;
+                $correctAnswers = 0;
+
+                foreach ($question->getAnswers() as $answerKey => $answer) {
+                    if (empty(trim($answer->getContent()))) {
+                        // $errors[] = "Une réponse de la question " . ($questionKey + 1) . " est vide.";
+                    } else {
+                        $validAnswers++;
+                    }
+
+                    if ($answer->isCorrect()) {
+                        $correctAnswers++;
+                    }
+
+                    $answer->setQuestion($question); // relation inverse
+                }
+
+                if ($validAnswers < 4) {
+                    $errors[] = "La question " . ($questionKey + 1) . " doit avoir 4 réponses remplies.";
+                }
+
+                if ($correctAnswers !== 1) {
+                    $errors[] = "La question " . ($questionKey + 1) . " doit avoir **exactement une seule** bonne réponse.";
+                }
+
+                $question->setQuizz($quizz);
+            }
+
+            // Retour si erreurs
+            if (count($errors) > 0) {
+                foreach ($errors as $msg) {
+                    $this->addFlash('error', $msg);
+                }
+
+                return $this->render('manage/create.html.twig', [
+                    'form' => $form->createView(),
+                ]);
+            }
+
+            // Si tout est bon
+            $quizz->setAuthor($this->getUser());
+            $quizz->setCreatedAt(new DateTimeImmutable());
+
             $em->persist($quizz);
             $em->flush();
 
-            return $this->redirectToRoute('home');
+            $this->addFlash('success', 'Le quiz a bien été créé !');
+
+            // return $this->redirectToRoute('home');
         }
 
         return $this->render('manage/create.html.twig', [
-            'form' => $form,
+            'form' => $form->createView(),
+            'nb' => $nb,
         ]);
     }
+
 }

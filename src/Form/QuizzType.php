@@ -8,6 +8,7 @@ use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use App\Form\QuestionType;
@@ -19,22 +20,24 @@ class QuizzType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            
-            ->add('img_url',FileType::class, [
-                'label' => 'Image quiz',
-                'mapped' => false,
-                'required' => false,
-            ])
             ->add('category', EntityType::class, [
                 'class' => Category::class,
                 'choice_label' => 'name',
             ])
-             ->add('questions', CollectionType::class, [
+
+            ->add('img_url', FileType::class, [
+                'label' => 'Image quiz',
+                'mapped' => false,
+                'required' => false,
+            ])
+
+            ->add('questions', CollectionType::class, [
                 'entry_type' => QuestionType::class,
                 'allow_add' => false,
                 'by_reference' => false,
                 'label' => false,
             ])
+            ->add("Create", SubmitType::class)
         ;
     }
 
