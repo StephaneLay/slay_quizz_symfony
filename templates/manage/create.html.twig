@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un quiz
+{% endblock %}
+
+{% block body %}
+	{% include 'parts/navbar.html.twig' %}
+	<h1>Créer un nouveau quiz</h1>
+
+	{{ form_start(form) }}
+	{{ form_row(form.title) }}
+	{{ form_row(form.img_url) }}
+
+	<h2>Questions</h2>
+
+	{% for question in form.questions %}
+		<div class="card my-3 p-3 border">
+			{{ form_row(question.content) }}
+
+			<div class="row">
+				{% for answer in question.answers %}
+					<div class="col-md-6">
+						{{ form_row(answer.content) }}
+						{{ form_row(answer.isCorrect) }}
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+	{% endfor %}
+
+	<button class="btn btn-success">Créer</button>
+	{{ form_end(form) }}
+{% endblock %}

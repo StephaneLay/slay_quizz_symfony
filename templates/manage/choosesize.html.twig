@@ -1,0 +1,18 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Créer un nouveau quiz
+{% endblock %}
+
+{% block body %}
+	{% include 'parts/navbar.html.twig' %}
+
+	<h1>Créer un nouveau quiz</h1>
+
+	<p>Choisissez la taille de votre quiz :</p>
+
+	<ul>
+		<li><a href="{{ path('create', {'nb': 10}) }}" class="">Petit (10 questions)</a></li>
+		<li><a href="{{ path('create', {'nb': 20}) }}" class="">Moyen (20 questions)</a></li>
+		<li><a href="{{ path('create', {'nb': 30}) }}" class="">Grand (30 questions)</a></li>
+	</ul>
+{% endblock %}
