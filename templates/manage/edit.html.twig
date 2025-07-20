@@ -1,0 +1,17 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <h1>Modifier le quiz "{{ quizz.title }}"</h1>
+
+    {{ form_start(form) }}
+        {{ form_widget(form) }}
+        {# <button class="btn btn-primary">Mettre à jour</button> #}
+    {{ form_end(form) }}
+
+    {% for msg in app.flashes('error') %}
+        <div class="alert alert-danger">{{ msg }}</div>
+    {% endfor %}
+    {% for msg in app.flashes('success') %}
+        <div class="alert alert-success">{{ msg }}</div>
+    {% endfor %}
+{% endblock %}

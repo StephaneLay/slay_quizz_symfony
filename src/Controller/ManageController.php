@@ -146,7 +146,7 @@ final class ManageController extends AbstractController
                 foreach ($errors as $msg) {
                     $this->addFlash('error', $msg);
                 }
-                return $this->redirectToRoute('create',['nb'=>$nb]);
+                return $this->redirectToRoute('create', ['nb' => $nb]);
                 // return $this->render('manage/create.html.twig', [
                 //     'form' => $form->createView(),
                 //     'nb' => $nb,
@@ -176,6 +176,96 @@ final class ManageController extends AbstractController
         return $this->render('manage/create.html.twig', [
             'form' => $form->createView(),
             'nb' => $nb,
+        ]);
+    }
+
+    #[Route('/quiz/edit/{id}', name: 'edit')]
+    public function edit(
+        Request $request,
+        Quizz $quizz,
+        EntityManagerInterface $em,
+        SluggerInterface $slugger
+    ): Response {
+        // Sécurité : seul l'auteur ou un admin peut modifier
+        if (!$this->isGranted('ROLE_ADMIN') && $quizz->getAuthor() !== $this->getUser()) {
+            throw $this->createAccessDeniedException('Vous ne pouvez pas modifier ce quiz.');
+        }
+
+        $form = $this->createForm(QuizzType::class, $quizz);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $errors = [];
+
+            // Image upload
+            /** @var UploadedFile|null $imageFile */
+            $imageFile = $form->get('img_url')->getData();
+
+            if ($imageFile) {
+                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+                try {
+                    $imageFile->move(
+                        $this->getParameter('quiz_images_directory'),
+                        $newFilename
+                    );
+                    $quizz->setImgUrl('/uploads/quizzes/' . $newFilename);
+                } catch (FileException $e) {
+                    $this->addFlash('error', "Erreur lors de l'upload de l'image.");
+                    return $this->redirectToRoute('edit', ['id' => $quizz->getId()]);
+                }
+            }
+
+            // Validation manuelle comme dans create
+            foreach ($quizz->getQuestions() as $question) {
+                if (empty(trim($question->getContent()))) {
+                    $this->addFlash('error', "Une des questions est vide.");
+                    return $this->redirectToRoute('edit', ['id' => $quizz->getId()]);
+                }
+
+                $validAnswers = 0;
+                $correctAnswers = 0;
+
+                foreach ($question->getAnswers() as $answer) {
+                    if (!empty(trim($answer->getContent()))) {
+                        $validAnswers++;
+                    }
+                    if ($answer->isCorrect()) {
+                        $correctAnswers++;
+                    }
+                    $answer->setQuestion($question); // relation inverse
+                }
+
+                if ($validAnswers < 4) {
+                    $this->addFlash('error', "Chaque question doit avoir 4 réponses non vides.");
+                    return $this->redirectToRoute('edit', ['id' => $quizz->getId()]);
+                }
+
+                if ($correctAnswers !== 1) {
+                    $this->addFlash('error', "Chaque question doit avoir une seule bonne réponse.");
+                    return $this->redirectToRoute('edit', ['id' => $quizz->getId()]);
+                }
+
+                $question->setQuizz($quizz);
+            }
+
+            if (count($quizz->getQuestions()) < 1) {
+                $this->addFlash('error', "Il faut au moins une question valide.");
+                return $this->redirectToRoute('edit', ['id' => $quizz->getId()]);
+            }
+
+            // Pas besoin de persist($quizz) si déjà connu
+            $em->flush();
+
+            $this->addFlash('success', 'Le quiz a bien été modifié !');
+            return $this->redirectToRoute('home');
+        }
+
+        return $this->render('manage/edit.html.twig', [
+            'form' => $form->createView(),
+            'quizz' => $quizz,
         ]);
     }
 
