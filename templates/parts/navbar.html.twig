@@ -4,5 +4,10 @@
 		<p>Logged in as
 			{{app.user.name}}</p>
 		<a href="{{ path('app_logout') }}">Logout</a>
+		<a class="notif-container" href="{{path('notifications')}}">
+			<img id="notificon" src="{{asset('images/notificon.png')}}" alt="">
+			<p id="notifnumber">{{app.user.notifications|length}}</p>
+		</a>
+
 	</nav>
 </header>

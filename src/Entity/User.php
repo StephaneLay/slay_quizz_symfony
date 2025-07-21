@@ -50,10 +50,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Quizz::class, mappedBy: 'author')]
     private Collection $quizzs;
 
+    /**
+     * @var Collection<int, Notification>
+     */
+    #[ORM\ManyToMany(targetEntity: Notification::class, mappedBy: 'users')]
+    private Collection $notifications;
+
     public function __construct()
     {
         $this->results = new ArrayCollection();
         $this->quizzs = new ArrayCollection();
+        $this->notifications = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -193,6 +200,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($quizz->getAuthor() === $this) {
                 $quizz->setAuthor(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Notification>
+     */
+    public function getNotifications(): Collection
+    {
+        return $this->notifications;
+    }
+
+    public function addNotification(Notification $notification): static
+    {
+        if (!$this->notifications->contains($notification)) {
+            $this->notifications->add($notification);
+            $notification->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeNotification(Notification $notification): static
+    {
+        if ($this->notifications->removeElement($notification)) {
+            $notification->removeUser($this);
         }
 
         return $this;

@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Notifications
+{% endblock %}
+
+{% block body %}
+	{% include 'parts/navbar.html.twig' %}
+	<div class="notification-screen">
+		<h1>Vos notifications</h1>
+		{% for notification in notifications %}
+			<div class="notification-box">
+				<p>{{ notification.content }}</p>
+
+				<form id="delete-notif" method="post" action="{{ path('notification_delete', { id: notification.id }) }}" onsubmit="return confirm('Supprimer cette notification ?');">
+					<input type="hidden" name="_token" value="{{ csrf_token('delete_notification_' ~ notification.id) }}">
+					<button class="btn btn-danger">
+						<img src="{{asset('images/bin.png')}}" alt="">Supprimer
+					</button>
+				</form>
+			</div>
+		{% else %}
+			<p>Aucune notification à afficher.</p>
+		{% endfor %}
+	</div>
+
+
+{% endblock %}

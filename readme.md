@@ -1,17 +1,9 @@
 
-ON VA DEVOIR GERER LE SUBMIT DU FORMULAIRE PIUR DETERMINER LES INFOS QU'ON INJECTE LORS DU ISSUBMITTED IS VALID
 
-
-LE FORMULAIRE SORT PLEIN D'ERREURS QU'ON DOIT GERER AVEC DES MESSAGES FLASH/FORM ERROR ( duplicata mail par ex)
-
-ON VA DEVOIR CREER PAGE DE CREATION ET DUPDATE
-
-SERONT PLUTOT SIMILAIRE => upload photo pour quizz
-
-puis ajout questions en bas + modif questions avec content/etc...
+NOTIF : ID , CONTENT , OBJECT, , OWNER(RELATION ONE TO MANY + MANY TO ONE USER)
+ON VA CREER NOTIFICATIONS , EN MANY TO MANY . ON LES AFFICHERA DANS LE HEADER EN FONCTION DE L'USER , ON CREERA UNE PAGE QUI PERMETTRA DE LES VOIR , LIRE ET SUPPRIMER
+PUIS ON CREERA L'EVENT
 
 Si edité et modifié , alors event personnalisé qui notifiera les users ??(a reflechir)
-
-Jouer avec les lgins/inscription, voir pour que les redirections marchent toujours , voir ce qui se passe si on se reco et qu'on est deja co par ex
 
 

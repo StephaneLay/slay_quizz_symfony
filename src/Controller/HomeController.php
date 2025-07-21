@@ -2,9 +2,13 @@
 
 namespace App\Controller;
 
+use App\Entity\Notification;
+use App\Repository\NotificationRepository;
 use App\Repository\QuizzRepository;
 use App\Repository\ResultsRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
@@ -19,13 +23,14 @@ final class HomeController extends AbstractController
     }
 
     #[Route('/play', name: 'play')]
-    public function showquizz(QuizzRepository $quizzRepository,
-    ResultsRepository $resultsRepository): Response
-    {
+    public function showquizz(
+        QuizzRepository $quizzRepository,
+        ResultsRepository $resultsRepository
+    ): Response {
         $user = $this->getUser();
         $quizzes = $quizzRepository->findAll();
 
-        $userResults = $resultsRepository->findBy(['user'=>$user]);
+        $userResults = $resultsRepository->findBy(['user' => $user]);
 
 
         return $this->render('home/showquizz.html.twig', [
@@ -33,5 +38,28 @@ final class HomeController extends AbstractController
             'quizzes' => $quizzes,
             'userResults' => $userResults
         ]);
+    }
+
+    #[Route('/notifications', name: 'notifications')]
+    public function shownotifications(NotificationRepository $notificationRepository)
+    {
+
+        $notifications = $notificationRepository->findAll();
+        return $this->render('home/shownotifications.html.twig', [
+            'controller_name' => 'HomeController',
+            'notifications' => $notifications
+        ]);
+    }
+
+    #[Route('/notification/delete/{id}', name: 'notification_delete', methods: ['POST'])]
+    public function delete(Notification $userNotification, EntityManagerInterface $em, Request $request): Response
+    {
+        if ($this->isCsrfTokenValid('delete_notification_' . $userNotification->getId(), $request->request->get('_token'))) {
+            $em->remove($userNotification);
+            $em->flush();
+            $this->addFlash('success', 'Notification supprimée.');
+        }
+
+        return $this->redirectToRoute('notifications');
     }
 }

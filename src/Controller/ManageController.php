@@ -5,13 +5,16 @@ namespace App\Controller;
 use App\Entity\Answer;
 use App\Entity\Question;
 use App\Entity\Quizz;
+use App\Events\QuizzUpdateEvent;
 use App\Form\QuizzType;
 use App\Repository\AnswerRepository;
 use App\Repository\QuestionRepository;
 use App\Repository\QuizzRepository;
+use App\Repository\ResultsRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -183,7 +186,8 @@ final class ManageController extends AbstractController
         Request $request,
         Quizz $quizz,
         EntityManagerInterface $em,
-        SluggerInterface $slugger
+        SluggerInterface $slugger,
+        EventDispatcherInterface $dispatcher
     ): Response {
         // Sécurité : seul l'auteur ou un admin peut modifier
         if (!$this->isGranted('ROLE_ADMIN') && $quizz->getAuthor() !== $this->getUser()) {
@@ -254,11 +258,13 @@ final class ManageController extends AbstractController
                 $this->addFlash('error', "Il faut au moins une question valide.");
                 return $this->redirectToRoute('edit', ['id' => $quizz->getId()]);
             }
+            
+            $dispatcher->dispatch(new QuizzUpdateEvent($quizz),QuizzUpdateEvent::NAME);
 
-            // Pas besoin de persist($quizz) si déjà connu
             $em->flush();
 
             $this->addFlash('success', 'Le quiz a bien été modifié !');
+
             return $this->redirectToRoute('home');
         }
 
@@ -274,7 +280,8 @@ final class ManageController extends AbstractController
         Quizz $quizz,
         EntityManagerInterface $em,
         QuestionRepository $questionRepository,
-        AnswerRepository $answerRepository
+        AnswerRepository $answerRepository,
+        ResultsRepository $resultsRepository
     ): Response {
         if (!$this->isCsrfTokenValid('delete_quizz_' . $quizz->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton CSRF invalide.');
@@ -291,6 +298,12 @@ final class ManageController extends AbstractController
         }
 
         $em->remove($quizz);
+
+        $results = $resultsRepository->findBy(['quizz'=>$quizz]);
+        foreach ($results as $result) {
+            $em->remove($result);
+        }
+
         $em->flush();
 
         $this->addFlash('success', 'Le quiz a bien été supprimé.');

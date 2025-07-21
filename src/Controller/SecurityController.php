@@ -50,6 +50,7 @@ class SecurityController extends AbstractController
             $existingUser = $em->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
             if ($existingUser) {
                 $this->addFlash('error', 'Un compte avec cet email existe déjà.');
+                return $this->redirectToRoute('subscribe');
                 // Tu peux aussi choisir de rediriger ou simplement de laisser le formulaire s’afficher avec le flash
             } else {
                 $hashedPassword = $hasher->hashPassword(
@@ -65,7 +66,7 @@ class SecurityController extends AbstractController
                 return $this->redirectToRoute('app_login');
             }
         }
-        
+
         return $this->render('security/subscribe.html.twig', [
             'controller_name' => 'HomeController',
             'form' => $signForm->createView(), // il manquait createView()

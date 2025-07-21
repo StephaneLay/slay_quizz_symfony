@@ -31,6 +31,27 @@ header a {
     border-radius: 15px;
 }
 
+.notif-container {
+    display: flex;
+    flex-direction: row;
+    padding: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+#notificon {
+    height: 2rem;
+    width: 2rem;
+    background-color: white;
+}
+
+#notifnumber {
+    color: white;
+    background-color: red;
+    padding: .5rem;
+    border-radius: 10px;
+}
+
 /* PAGES SECURITY (LOGIN + SUBSCRIBE) */
 
 /* Page login */
@@ -570,4 +591,34 @@ textarea {
     background-color: #f9a825;
     color: #fffde7;
     border: 1px solid #f57f17;
+}
+
+/* NOTIF SCREEN */
+
+.notification-screen {
+    padding: 2rem;
+}
+
+.notification-screen h1 {
+    margin-bottom: 1rem;
+}
+
+.notification-box {
+    display: flex;
+    justify-content: space-around;
+    width: 60%;
+    align-items: center;
+    border: 1px solid;
+    margin-bottom: .5rem;
+}
+
+#delete-notif button {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#delete-notif img {
+    width: 2rem;
+    height: 2rem
 }
