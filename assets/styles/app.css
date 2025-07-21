@@ -177,7 +177,7 @@ header a {
     background-color: rgb(1, 31, 14);
 }
 
-.authorlabel{
+.authorlabel {
     color: white;
     height: fit-content;
     font-size: .5em;
@@ -370,7 +370,7 @@ button[type="submit"]:hover {
 
 /* Page Edit */
 
-.grid-edit{
+.grid-edit {
     display: flex;
     flex-wrap: wrap;
     list-style: none;
@@ -380,7 +380,157 @@ button[type="submit"]:hover {
     list-style: none;
 }
 
-.title-edit{
+.title-edit {
     text-align: center;
     margin: 1rem;
+}
+
+/* Choose Size */
+
+.quiz-size-container {
+    text-align: center;
+    margin-top: 3rem;
+    font-family: sans-serif;
+    color: #222;
+}
+
+.quiz-size-container h1 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.quiz-size-container p {
+    font-size: 1.2rem;
+    margin-bottom: 2rem;
+}
+
+.quiz-size-container ul {
+    list-style: none;
+    padding: 0;
+}
+
+.quiz-size-container li {
+    margin: 3rem 0;
+}
+
+.quiz-size-container a {
+    text-decoration: none;
+    background-color: #007BFF;
+    color: white;
+    padding: 1rem 2rem;
+    border-radius: 10px;
+    font-size: 1.2rem;
+    transition: background-color 0.3s ease;
+}
+
+.quiz-size-container a:hover {
+    background-color: #0056b3;
+}
+
+/* CREATE PAGE */
+
+.create-quiz-container {
+    width: 80%;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #f2f2f2;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.create-quiz-container h1,
+.create-quiz-container h2 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.create-quiz-container .card {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.create-quiz-container .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.create-quiz-container .col-md-6 {
+    flex: 1 1 45%;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+textarea {
+    width: 100%;
+    min-height: 150px;
+    padding: 1rem;
+    font-size: 1rem;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    resize: vertical;
+    /* L'utilisateur peut agrandir en hauteur */
+    box-sizing: border-box;
+    margin-bottom: 1rem;
+}
+
+
+/* EDIT QUIZZ */
+
+.edit-quiz-container {
+    width: 80%;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #eaeaea;
+    border-radius: 10px;
+}
+
+.edit-quiz-container h1 {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+/* MANAGE GENERAL */
+
+.manage-container {
+    width: 90%;
+    margin: auto;
+}
+
+.manage-card-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin: 1rem;
+    width: 30%;
+    text-align: center;
+}
+
+ .manage-card-wrapper .quizz-card {
+    width: 100% !important;
+}
+
+.manage-card-wrapper form {
+    margin-top: 1rem;
+}
+
+.manage-card-wrapper .btn-danger {
+    background-color: rgb(184, 44, 44);
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.manage-card-wrapper .btn-danger:hover {
+    background-color: rgb(148, 23, 23);
 }

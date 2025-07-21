@@ -13,14 +13,14 @@
 	{% else %}
 		<div class="grid-edit">
 			{% for quizz in quizzes %}
+				<div class="manage-card-wrapper">
+					{% include 'parts/quizzeditcard.html.twig' with { 'quizz': quizz } %}
+					<form method="post" action="{{ path('delete', {'id': quizz.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce quiz ?');">
+						<input type="hidden" name="_token" value="{{ csrf_token('delete_quizz_' ~ quizz.id) }}">
+						<button class="btn-danger">Supprimer</button>
+					</form>
+				</div>
 
-				{% include 'parts/quizzeditcard.html.twig' with {
-        'quizz': quizz,
-    } %}
-		<form method="post" action="{{ path('delete', {'id': quizz.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer ce quiz ?');">
-    <input type="hidden" name="_token" value="{{ csrf_token('delete_quizz_' ~ quizz.id) }}">
-    <button class="btn btn-danger">Supprimer</button>
-</form>
 			{% endfor %}
 
 		{% endif %}

@@ -276,7 +276,6 @@ final class ManageController extends AbstractController
         QuestionRepository $questionRepository,
         AnswerRepository $answerRepository
     ): Response {
-        // Vérification CSRF
         if (!$this->isCsrfTokenValid('delete_quizz_' . $quizz->getId(), $request->request->get('_token'))) {
             $this->addFlash('error', 'Jeton CSRF invalide.');
             return $this->redirectToRoute('manage');
