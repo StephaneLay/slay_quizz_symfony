@@ -6,6 +6,8 @@ use App\Entity\Answer;
 use App\Entity\Question;
 use App\Entity\Quizz;
 use App\Form\QuizzType;
+use App\Repository\AnswerRepository;
+use App\Repository\QuestionRepository;
 use App\Repository\QuizzRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
@@ -37,7 +39,7 @@ final class ManageController extends AbstractController
         ]);
     }
 
-    #[Route('/create', name: 'choosesize')]
+    #[Route('/quiz/create', name: 'choosesize')]
     public function choosesize(): Response
     {
         return $this->render('manage/choosesize.html.twig', [
@@ -147,7 +149,7 @@ final class ManageController extends AbstractController
                     $this->addFlash('error', $msg);
                 }
                 return $this->redirectToRoute('create', ['nb' => $nb]);
-                
+
             }
 
             // Si tout est bon
@@ -266,4 +268,34 @@ final class ManageController extends AbstractController
         ]);
     }
 
+    #[Route('/quiz/delete/{id}', name: 'delete', methods: ['POST'])]
+    public function delete(
+        Request $request,
+        Quizz $quizz,
+        EntityManagerInterface $em,
+        QuestionRepository $questionRepository,
+        AnswerRepository $answerRepository
+    ): Response {
+        // Vérification CSRF
+        if (!$this->isCsrfTokenValid('delete_quizz_' . $quizz->getId(), $request->request->get('_token'))) {
+            $this->addFlash('error', 'Jeton CSRF invalide.');
+            return $this->redirectToRoute('manage');
+        }
+
+        $questions = $questionRepository->findBy(['quizz' => $quizz]);
+        foreach ($questions as $question) {
+            $answers = $answerRepository->findBy(['question'=>$question]);
+            foreach ($answers as $answer) {
+                $em->remove($answer);
+            }
+            $em->remove($question);
+        }
+
+        $em->remove($quizz);
+        $em->flush();
+
+        $this->addFlash('success', 'Le quiz a bien été supprimé.');
+
+        return $this->redirectToRoute('manage');
+    }
 }
