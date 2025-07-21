@@ -447,7 +447,9 @@ button[type="submit"]:hover {
 .create-quiz-container .card {
     background-color: white;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: 1px solid black;
+    margin-bottom: .5rem;
+    padding: 1rem;
 }
 
 .create-quiz-container .row {
@@ -513,7 +515,7 @@ textarea {
     text-align: center;
 }
 
- .manage-card-wrapper .quizz-card {
+.manage-card-wrapper .quizz-card {
     width: 100% !important;
 }
 
@@ -533,4 +535,39 @@ textarea {
 
 .manage-card-wrapper .btn-danger:hover {
     background-color: rgb(148, 23, 23);
+}
+
+.alert {
+    padding: 1rem 1.5rem;
+    margin: 1rem auto;
+    max-width: 800px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.25);
+    transition: all 0.3s ease-in-out;
+}
+
+.alert-success {
+    background-color: #2e7d32;
+    color: #e8f5e9;
+    border: 1px solid #1b5e20;
+}
+
+.alert-danger {
+    background-color: #c62828;
+    color: #ffebee;
+    border: 1px solid #b71c1c;
+}
+
+.alert-info {
+    background-color: #1565c0;
+    color: #e3f2fd;
+    border: 1px solid #0d47a1;
+}
+
+.alert-warning {
+    background-color: #f9a825;
+    color: #fffde7;
+    border: 1px solid #f57f17;
 }

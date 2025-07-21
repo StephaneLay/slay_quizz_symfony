@@ -94,7 +94,7 @@ final class ManageController extends AbstractController
                 }
             } else {
                 // Image par défaut
-                $quizz->setImgUrl('assets\images\default_quizz_pic.jpg');
+                $quizz->setImgUrl('images/default_quizz_pic.jpg');
             }
 
             // Nettoyage + validation des questions
