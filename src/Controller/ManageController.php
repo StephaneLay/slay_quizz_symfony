@@ -147,10 +147,7 @@ final class ManageController extends AbstractController
                     $this->addFlash('error', $msg);
                 }
                 return $this->redirectToRoute('create', ['nb' => $nb]);
-                // return $this->render('manage/create.html.twig', [
-                //     'form' => $form->createView(),
-                //     'nb' => $nb,
-                // ]);
+                
             }
 
             // Si tout est bon

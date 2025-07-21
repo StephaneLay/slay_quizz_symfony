@@ -41,34 +41,34 @@ class SecurityController extends AbstractController
         EntityManagerInterface $em,
         UserPasswordHasherInterface $hasher
     ): Response {
-
         $user = new User();
         $signForm = $this->createForm(SubscriptionFormType::class, $user);
         $signForm->handleRequest($request);
 
-
         if ($signForm->isSubmitted() && $signForm->isValid()) {
+            // Vérifie si un utilisateur avec le même email existe déjà
+            $existingUser = $em->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
+            if ($existingUser) {
+                $this->addFlash('error', 'Un compte avec cet email existe déjà.');
+                // Tu peux aussi choisir de rediriger ou simplement de laisser le formulaire s’afficher avec le flash
+            } else {
+                $hashedPassword = $hasher->hashPassword(
+                    $user,
+                    $user->getPassword()
+                );
+                $user->setPassword($hashedPassword);
+                $user->setRoles([$signForm->get('role')->getData()]);
 
+                $em->persist($user);
+                $em->flush();
 
-            $hashedPassword = $hasher->hashPassword(
-                $user,
-                $user->getPassword()
-            );
-            $user->setPassword($hashedPassword);
-            $user->setRoles([$signForm->get('role')->getData()]);
-
-            $em->persist($user);
-            $em->flush();
-
-            //PROC ICI LEVENT MAIL SI BESOIN
-
-            return $this->redirectToRoute('app_login');
+                return $this->redirectToRoute('app_login');
+            }
         }
-
+        
         return $this->render('security/subscribe.html.twig', [
             'controller_name' => 'HomeController',
-            'form' => $signForm
-
+            'form' => $signForm->createView(), // il manquait createView()
         ]);
     }
 }
