@@ -29,6 +29,9 @@ final class ManageController extends AbstractController
     #[Route('/manage', name: 'manage')]
     public function index(QuizzRepository $quizRepository): Response
     {
+        //SORT (avec le voter) :
+        //TOUS LES QUIZZ SI ON A UN ADMIN
+        //UNIQUEMENT LES QUIZZ DONT L'USER EST L'AUTHOR SINON
         $user = $this->getUser();
 
         if ($this->isGranted('ROLE_ADMIN')) {
@@ -46,6 +49,8 @@ final class ManageController extends AbstractController
     #[Route('/quiz/create', name: 'choosesize')]
     public function choosesize(): Response
     {
+        //ECRAN DE CHOIX DE TAILLE DE QUIZZ
+        //(SOLUTION QUE J'AI CHOISIE POUR REGLER LE MANQUE DE JS POUR AJOUTER DYNAMIQUEMENT DES QUESTIONS AU BESOIN)
         return $this->render('manage/choosesize.html.twig', [
             'controller_name' => 'ManageController',
 
@@ -70,7 +75,7 @@ final class ManageController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            // Validation manuelle
+            
             $errors = [];
 
             // Titre obligatoire
@@ -86,7 +91,7 @@ final class ManageController extends AbstractController
             $quizz->setImgUrl($imgUrl);
 
             // Nettoyage + validation des questions
-            foreach ($quizz->getQuestions() as $questionKey => $question) {
+            foreach ($quizz->getQuestions() as $question) {
 
 
                 if (empty(trim($question->getContent()))) {
@@ -107,15 +112,15 @@ final class ManageController extends AbstractController
                         $correctAnswers++;
                     }
 
-                    $answer->setQuestion($question); // relation inverse
+                    $answer->setQuestion($question); 
                 }
-
+                //SI LES 4 REPONSES ONT DU CONTENU
                 if ($validAnswers < 4) {
                     $errors[] = "Les 4 réponses doivent avoir du contenu";
                     $question->removeAnswer($answer);
                     continue;
                 }
-
+                //SI UNE SEULE REPONSE EST COCHEE BONNE REPONSE
                 if ($correctAnswers !== 1) {
                     $errors[] = "Une réponse et une seule doit etre correcte pour chaque question";
                     $question->removeAnswer($answer);
@@ -141,7 +146,6 @@ final class ManageController extends AbstractController
             }
 
             // Si tout est bon
-
             foreach ($quizz->getQuestions() as $question) {
                 $em->persist($question);
                 foreach ($question->getAnswers() as $answer) {
@@ -183,6 +187,8 @@ final class ManageController extends AbstractController
         $form = $this->createForm(QuizzType::class, $quizz);
         $form->handleRequest($request);
 
+        //MEME CHOSE QUE DANS LE CREATE , MALHEUREUSEMENT REFACTORISR AVEC DES SERVICES CREEAIENT DEES ERREURS,
+        //CAR JE DEVAIS FAIRE DES ALLER RETOURS AVEC MES ENTITES ENTRE SERVICE ET CONTROLLER
         if ($form->isSubmitted() && $form->isValid()) {
             $errors = [];
 
@@ -210,7 +216,7 @@ final class ManageController extends AbstractController
                     if ($answer->isCorrect()) {
                         $correctAnswers++;
                     }
-                    $answer->setQuestion($question); // relation inverse
+                    $answer->setQuestion($question); 
                 }
 
                 if ($validAnswers < 4) {
@@ -231,6 +237,7 @@ final class ManageController extends AbstractController
                 return $this->redirectToRoute('edit', ['id' => $quizz->getId()]);
             }
 
+            //SI CE QUIZZ A DEJA ETE REALISE PAR DES USERS, SUPPRIMER LEURS PROGRESSIONS ET LES EN INFORMER PAR NOTIFICATION
             $dispatcher->dispatch(new QuizzUpdateEvent($quizz), QuizzUpdateEvent::NAME);
 
             $em->flush();

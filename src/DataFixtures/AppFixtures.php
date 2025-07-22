@@ -14,6 +14,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+
     const CATEGORIES = [
         'CS' => 'Cinéma & Series',
         'HG' => 'Histoire & Géographie',
@@ -32,6 +33,13 @@ class AppFixtures extends Fixture
         $categories = [];
         $quizzes = [];
         $answers = [];
+
+        $regularUser = new User();
+        $regularUser->setEmail("user@user.fr")
+            ->setName("user_test")
+            ->setRoles([])
+            ->setPassword($this->hasher->hashPassword($regularUser, 'test'));
+        $manager->persist($regularUser);
 
         $adminUser = new User();
         $adminUser->setEmail("admin@admin.fr")
@@ -62,6 +70,7 @@ class AppFixtures extends Fixture
             $manager->persist($quizz);
         }
 
+        //UNE FOIS LES CATEGORIES ET QUIZZ CREES,ON UTILISE LE CSV POUR GENRER LES QUESTIONS,LES REPONSES ET LES ASSIGNER AU BON QUIZZ
         foreach ($sheet as $line) {
             $question = new Question();
             $question->setContent($line["Question"])

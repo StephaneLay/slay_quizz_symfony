@@ -17,6 +17,7 @@ final class HomeController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(): Response
     {
+        //Menu principal => 3 pages possibles
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
         ]);
@@ -28,7 +29,7 @@ final class HomeController extends AbstractController
         ResultsRepository $resultsRepository
     ): Response {
 
-
+        //Recuperer les quizzs et les historiques de l'user avec ces quizzs
         $user = $this->getUser();
         $quizzes = $quizzRepository->findAll();
         $userResults = $resultsRepository->findBy(['user' => $user]);
@@ -43,6 +44,7 @@ final class HomeController extends AbstractController
     #[Route('/notifications', name: 'notifications')]
     public function shownotifications(NotificationRepository $notificationRepository)
     {
+        //Recuperer les notifs concernant l'user(Query Builder)
         $notifications = $notificationRepository->findByUser($this->getUser());
 
         return $this->render('home/shownotifications.html.twig', [
@@ -54,6 +56,7 @@ final class HomeController extends AbstractController
     #[Route('/notification/delete/{id}', name: 'notification_delete', methods: ['POST'])]
     public function delete(Notification $userNotification, EntityManagerInterface $em, Request $request): Response
     {
+        //Supprimer notif en post puis redirect
         if ($this->isCsrfTokenValid('delete_notification_' . $userNotification->getId(), $request->request->get('_token'))) {
             $em->remove($userNotification);
             $em->flush();

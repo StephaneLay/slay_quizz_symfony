@@ -49,13 +49,14 @@ class SecurityController extends AbstractController
         $signForm->handleRequest($request);
 
         if ($signForm->isSubmitted() && $signForm->isValid()) {
-            // Vérifie si un utilisateur avec le même email existe déjà
+            // On regarde si cet email existe deja
             $existingUser = $em->getRepository(User::class)->findOneBy(['email' => $user->getEmail()]);
             if ($existingUser) {
                 $this->addFlash('error', 'Un compte avec cet email existe déjà.');
                 return $this->redirectToRoute('subscribe');
-                // Tu peux aussi choisir de rediriger ou simplement de laisser le formulaire s’afficher avec le flash
+                
             } else {
+                //Classical 
                 $hashedPassword = $hasher->hashPassword(
                     $user,
                     $user->getPassword()
@@ -66,6 +67,7 @@ class SecurityController extends AbstractController
 
                 $em->persist($user);
                 $em->flush();
+                //Petit event pour rentabiliser la fonctionnalité notification => message d'accueil
                 $dispatcher->dispatch(new UserSubscribeEvent($user),UserSubscribeEvent::NAME);
                 return $this->redirectToRoute('app_login');
             }
@@ -73,7 +75,7 @@ class SecurityController extends AbstractController
 
         return $this->render('security/subscribe.html.twig', [
             'controller_name' => 'HomeController',
-            'form' => $signForm->createView(), 
+            'form' => $signForm->createView()
         ]);
     }
 }

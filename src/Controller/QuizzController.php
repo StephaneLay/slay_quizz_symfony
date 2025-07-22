@@ -20,6 +20,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 final class QuizzController extends AbstractController
 {
+    //Messages de fin de quizz en fonction du ratio bonnesRéponses/TotalRéponses
     const ENDQUIZZ_MESSAGES = [
         0.33 => "Mouais bin c'est pas foufou comme résultat y a pas de quoi flamber",
         0.66 => "Franchement pas mal du tout j'ai envie de dire pas mal du tout",
@@ -29,6 +30,7 @@ final class QuizzController extends AbstractController
     #[Route('/quizz/{id}', name: 'quizz')]
     public function index(Quizz $quizz): Response
     {
+        //Page présentation du quizz
         return $this->render('quizz/quizz.html.twig', [
             'controller_name' => 'QuizzController',
             'quizz' => $quizz
@@ -44,13 +46,14 @@ final class QuizzController extends AbstractController
         EntityManagerInterface $em
     ): Response {
 
+        //RECUPERER USER ET HISTORIQUE ( Mieux que SESSION)
         $user = $this->getUser();
-
         $result = $resultsRepository->findOneBy([
             'user' => $user,
             'quizz' => $quizz,
         ]);
         
+        //SI 1ere fois USER/QUIZZ : On doit créer un nouvel historique
         if (!$result) {
             $result = (new Results())
                 ->setUser($user)
@@ -62,8 +65,10 @@ final class QuizzController extends AbstractController
             $em->flush();
         }
 
+        //On récupere la bonne question selon historique(pas de probleme de formulaire/session)
         $question = $questionService->getQuestionByTracker($result->getQuestionTracker(), $quizz);
 
+        //Si pas de question, alors fin de quizz
         if (!$question) {
             return $this->redirectToRoute('endquizz', ['id' => $quizz->getId()]);
         }
@@ -84,6 +89,7 @@ final class QuizzController extends AbstractController
         AnswerRepository $answerRepository
     ): Response {
 
+        //On recup historique, on ajoute le vote de l'user, on incremente l'historique
         $user = $this->getUser();
         $result = $resultsRepository->findOneBy(
             [
@@ -102,7 +108,6 @@ final class QuizzController extends AbstractController
         $result->setScore($result->getScore() + intval($userAnswer->isCorrect()));
 
         $em->flush();
-
 
         return $this->redirectToRoute('answerresult', [
             'id' => $quizz->getId(),
@@ -125,6 +130,8 @@ final class QuizzController extends AbstractController
         QuestionRepository $questionRepository,
         AnswerRepository $answerRepository
     ): Response {
+
+        //On recupere les données necessaire à l'affichage de : réponse user, bonne réponse , total votes par réponses
         $question = $questionRepository->find($questionId);
         $userAnswer = $answerRepository->find($answerId);
         $totalVotes = $answerRepository->getSumVotesByQuestion($question->getId());
@@ -144,6 +151,8 @@ final class QuizzController extends AbstractController
         ResultsRepository $resultsRepository,
         EntityManagerInterface $em
     ) {
+
+        // On récup historique, on marque la complétion du quizz par le nullable completedAt
         $user = $this->getUser();
         $result = $resultsRepository->findOneBy(
             [
@@ -155,8 +164,10 @@ final class QuizzController extends AbstractController
         $result->setCompletedAt(new DateTimeImmutable());
         $em->flush();
 
+        //On sort un leaderboard avec querybuilder
         $topResults = $resultsRepository->findTopResultsForQuizz($quizz->getId());
 
+        //On sort le bon message avec la CONST 
         $message = "Un sans faute ! Impressionant";
         $ratio = round($result->getScore() / count($quizz->getQuestions()), 2);
 

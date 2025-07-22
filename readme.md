@@ -1,9 +1,21 @@
+# Projet Quizz
 
+Appli web permettant de jouer à des quizz, d’en créer, et de se mesurer aux autres joueurs à travers un système de leaderboard. J'ai tout de meme documenté mon code pour plus de clarté.N'hesitez pas à tester un des 6 quizzs des fixtures qui ont été crées avec soin!
 
-NOTIF : ID , CONTENT , OBJECT, , OWNER(RELATION ONE TO MANY + MANY TO ONE USER)
-ON VA CREER NOTIFICATIONS , EN MANY TO MANY . ON LES AFFICHERA DANS LE HEADER EN FONCTION DE L'USER , ON CREERA UNE PAGE QUI PERMETTRA DE LES VOIR , LIRE ET SUPPRIMER
-PUIS ON CREERA L'EVENT
+---
 
-Si edité et modifié , alors event personnalisé qui notifiera les users ??(a reflechir)
+## ✨ Fonctionnalités
 
+- 🔐 Authentification et inscription des utilisateurs (avec choix du rôle)
+- 🧠 Création et édition de quizz par les utilisateurs connectés
+- 📊 Affichage de chaque quizz, de son taux de complétion et d’un **leaderboard** une fois terminé
+- 🔔 Notifications personnalisées avec page dédiée
+- 🔒 Sécurité : contrôle des accès, restrictions sur les modifications non autorisées
+- 🧾 Vrais quizz importés à partir d’un fichier CSV fait à la main
 
+---
+
+## Compte de test
+
+Compte admin => email : admin@admin.fr / Password : admin
+Compte user => email : user@user.fr / Password : test
