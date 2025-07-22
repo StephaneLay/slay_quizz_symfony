@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\CustomServices\ImageUploader;
 use App\Entity\Answer;
 use App\Entity\Question;
 use App\Entity\Quizz;
@@ -52,7 +53,7 @@ final class ManageController extends AbstractController
     }
 
     #[Route('/quiz/create/{nb}', name: 'create')]
-    public function create(Request $request, int $nb, EntityManagerInterface $em, SluggerInterface $slugger): Response
+    public function create(Request $request, int $nb, EntityManagerInterface $em, SluggerInterface $slugger, ImageUploader $imageUploader): Response
     {
         $quizz = new Quizz();
 
@@ -81,24 +82,8 @@ final class ManageController extends AbstractController
             /** @var UploadedFile|null $imageFile */
             $imageFile = $form->get('img_url')->getData();
 
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('quiz_images_directory'), // à définir dans services.yaml
-                        $newFilename
-                    );
-                    $quizz->setImgUrl('/uploads/quizzes/' . $newFilename);
-                } catch (FileException $e) {
-                    $errors[] = "Erreur lors de l'upload de l'image.";
-                }
-            } else {
-                // Image par défaut
-                $quizz->setImgUrl('images/default_quizz_pic.jpg');
-            }
+            $imgUrl = $imageUploader->upload($imageFile);
+            $quizz->setImgUrl($imgUrl);
 
             // Nettoyage + validation des questions
             foreach ($quizz->getQuestions() as $questionKey => $question) {
@@ -187,7 +172,8 @@ final class ManageController extends AbstractController
         Quizz $quizz,
         EntityManagerInterface $em,
         SluggerInterface $slugger,
-        EventDispatcherInterface $dispatcher
+        EventDispatcherInterface $dispatcher,
+        ImageUploader $imageUploader
     ): Response {
         // Sécurité : seul l'auteur ou un admin peut modifier
         if (!$this->isGranted('ROLE_ADMIN') && $quizz->getAuthor() !== $this->getUser()) {
@@ -204,22 +190,8 @@ final class ManageController extends AbstractController
             /** @var UploadedFile|null $imageFile */
             $imageFile = $form->get('img_url')->getData();
 
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('quiz_images_directory'),
-                        $newFilename
-                    );
-                    $quizz->setImgUrl('/uploads/quizzes/' . $newFilename);
-                } catch (FileException $e) {
-                    $this->addFlash('error', "Erreur lors de l'upload de l'image.");
-                    return $this->redirectToRoute('edit', ['id' => $quizz->getId()]);
-                }
-            }
+            $imgUrl = $imageUploader->upload($imageFile);
+            $quizz->setImgUrl($imgUrl);
 
             // Validation manuelle comme dans create
             foreach ($quizz->getQuestions() as $question) {
@@ -258,8 +230,8 @@ final class ManageController extends AbstractController
                 $this->addFlash('error', "Il faut au moins une question valide.");
                 return $this->redirectToRoute('edit', ['id' => $quizz->getId()]);
             }
-            
-            $dispatcher->dispatch(new QuizzUpdateEvent($quizz),QuizzUpdateEvent::NAME);
+
+            $dispatcher->dispatch(new QuizzUpdateEvent($quizz), QuizzUpdateEvent::NAME);
 
             $em->flush();
 
@@ -290,7 +262,7 @@ final class ManageController extends AbstractController
 
         $questions = $questionRepository->findBy(['quizz' => $quizz]);
         foreach ($questions as $question) {
-            $answers = $answerRepository->findBy(['question'=>$question]);
+            $answers = $answerRepository->findBy(['question' => $question]);
             foreach ($answers as $answer) {
                 $em->remove($answer);
             }
@@ -299,7 +271,7 @@ final class ManageController extends AbstractController
 
         $em->remove($quizz);
 
-        $results = $resultsRepository->findBy(['quizz'=>$quizz]);
+        $results = $resultsRepository->findBy(['quizz' => $quizz]);
         foreach ($results as $result) {
             $em->remove($result);
         }

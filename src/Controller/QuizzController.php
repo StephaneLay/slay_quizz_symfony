@@ -50,8 +50,7 @@ final class QuizzController extends AbstractController
             'user' => $user,
             'quizz' => $quizz,
         ]);
-
-        //Si pas d'historique user/quizz, on en crée un
+        
         if (!$result) {
             $result = (new Results())
                 ->setUser($user)
@@ -65,7 +64,6 @@ final class QuizzController extends AbstractController
 
         $question = $questionService->getQuestionByTracker($result->getQuestionTracker(), $quizz);
 
-        //Si pas de question= si fin du quizz
         if (!$question) {
             return $this->redirectToRoute('endquizz', ['id' => $quizz->getId()]);
         }

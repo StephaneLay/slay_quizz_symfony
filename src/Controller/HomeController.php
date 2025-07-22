@@ -27,11 +27,11 @@ final class HomeController extends AbstractController
         QuizzRepository $quizzRepository,
         ResultsRepository $resultsRepository
     ): Response {
+
+
         $user = $this->getUser();
         $quizzes = $quizzRepository->findAll();
-
         $userResults = $resultsRepository->findBy(['user' => $user]);
-
 
         return $this->render('home/showquizz.html.twig', [
             'controller_name' => 'HomeController',
@@ -43,8 +43,8 @@ final class HomeController extends AbstractController
     #[Route('/notifications', name: 'notifications')]
     public function shownotifications(NotificationRepository $notificationRepository)
     {
-
         $notifications = $notificationRepository->findByUser($this->getUser());
+
         return $this->render('home/shownotifications.html.twig', [
             'controller_name' => 'HomeController',
             'notifications' => $notifications
