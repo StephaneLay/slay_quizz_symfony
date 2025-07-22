@@ -44,7 +44,7 @@ final class HomeController extends AbstractController
     public function shownotifications(NotificationRepository $notificationRepository)
     {
 
-        $notifications = $notificationRepository->findAll();
+        $notifications = $notificationRepository->findByUser($this->getUser());
         return $this->render('home/shownotifications.html.twig', [
             'controller_name' => 'HomeController',
             'notifications' => $notifications

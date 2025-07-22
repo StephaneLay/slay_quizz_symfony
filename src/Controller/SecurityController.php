@@ -3,9 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Events\UserSubscribeEvent;
 use App\Form\SubscriptionFormType;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -39,7 +41,8 @@ class SecurityController extends AbstractController
     public function subscribe(
         Request $request,
         EntityManagerInterface $em,
-        UserPasswordHasherInterface $hasher
+        UserPasswordHasherInterface $hasher,
+        EventDispatcherInterface $dispatcher
     ): Response {
         $user = new User();
         $signForm = $this->createForm(SubscriptionFormType::class, $user);
@@ -60,16 +63,17 @@ class SecurityController extends AbstractController
                 $user->setPassword($hashedPassword);
                 $user->setRoles([$signForm->get('role')->getData()]);
 
+
                 $em->persist($user);
                 $em->flush();
-
+                $dispatcher->dispatch(new UserSubscribeEvent($user),UserSubscribeEvent::NAME);
                 return $this->redirectToRoute('app_login');
             }
         }
 
         return $this->render('security/subscribe.html.twig', [
             'controller_name' => 'HomeController',
-            'form' => $signForm->createView(), // il manquait createView()
+            'form' => $signForm->createView(), 
         ]);
     }
 }

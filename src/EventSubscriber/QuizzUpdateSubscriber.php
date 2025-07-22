@@ -23,7 +23,7 @@ class QuizzUpdateSubscriber implements EventSubscriberInterface
         $this->em->remove($userResult);
         
         $notif = new Notification();
-        $notif->addUser($user)->setContent("Le quizz " . $quizz->getTitle() . " a été modifié, votre resultat a donc été supprimé. ");
+        $notif->addUser($user)->setContent("Le quizz " . $quizz->getTitle() . " a été modifié, votre progression a donc été réinitialisée. ");
         $this->em->persist($notif);
         $this->em->flush();
     }
